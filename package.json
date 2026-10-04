@@ -1,0 +1,28 @@
+{
+  "name": "rbgriggs-com",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/build-ai-files.mjs",
+    "build": "next build",
+    "start": "next start",
+    "import": "node scripts/import-substack.mjs",
+    "ai-files": "node scripts/build-ai-files.mjs"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "marked": "^14.1.4",
+    "next": "15.1.11",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "turndown": "^7.2.0",
+    "typescript": "^5"
+  }
+}
