@@ -15,7 +15,8 @@ const endpoints = [
   ["/concepts.md", "Glossary of every concept coined across the essays"],
   ["/about.md", "Author profile"],
   ["/corpus.json", "Structured dataset: summaries, theses, concepts, FAQs and full texts"],
-  ["/feed.xml", "RSS feed"],
+  ["/feed.xml", "RSS feed of essays and notes"],
+  ["/notes/feed.xml", "RSS feed of notes, with full text"],
   ["/sitemap.xml", "Sitemap"],
 ];
 

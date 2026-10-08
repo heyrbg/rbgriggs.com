@@ -22,7 +22,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description: n.summary || undefined,
     keywords: n.tags,
     robots: n.draft ? { index: false } : undefined,
-    alternates: { canonical: `/notes/${n.slug}`, types: { "text/markdown": `/notes/${n.slug}.md` } },
+    alternates: {
+      canonical: `/notes/${n.slug}`,
+      types: { "text/markdown": `/notes/${n.slug}.md`, "application/rss+xml": "/notes/feed.xml" },
+    },
     openGraph: { type: "article", title: n.title, description: n.summary, publishedTime: n.date, authors: [site.name] },
   };
 }

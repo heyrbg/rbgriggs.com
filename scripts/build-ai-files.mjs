@@ -109,6 +109,8 @@ ${notes.length ? `## Notes\n\nShorter, exploratory posts written directly for th
 
 - [Full corpus](${SITE_URL}/llms-full.txt): every essay, edition and original, in one file
 - [Structured dataset](${SITE_URL}/corpus.json): JSON with summaries, theses, concepts and full texts
+- [RSS: essays and notes](${SITE_URL}/feed.xml)
+- [RSS: notes, full text](${SITE_URL}/notes/feed.xml)
 - [Original publication](https://www.techforlife.com): Tech for Life on Substack
 `;
 write("llms.txt", llms);
