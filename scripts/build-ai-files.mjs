@@ -5,7 +5,7 @@
 //   /about.md            author profile
 //   /concepts.md         glossary of every coined concept
 //   /corpus.json         structured dataset of the whole corpus
-// Runs automatically before `next build` (see package.json "prebuild").
+// Runs as the first step of `npm run build` (see package.json).
 
 import fs from "node:fs";
 import path from "node:path";

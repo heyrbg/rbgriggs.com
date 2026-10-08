@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "NEXT_DIST_DIR=.next-dev next dev -p 4310",
-    "prebuild": "node scripts/build-ai-files.mjs",
-    "build": "next build",
+    "build": "node scripts/build-ai-files.mjs && next build",
     "start": "next start",
     "import": "node scripts/import-substack.mjs",
     "ai-files": "node scripts/build-ai-files.mjs",
