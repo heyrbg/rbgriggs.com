@@ -6,6 +6,7 @@ import { renderMarkdown } from "@/lib/markdown";
 import { personSchema, websiteSchema } from "@/lib/schema";
 import { EssayList } from "@/components/EssayList";
 import { JsonLd } from "@/components/JsonLd";
+import { Bio } from "@/components/Bio";
 import { site } from "@/lib/site";
 
 const START_HERE = ["manifesto", "the-high-dimensional-society", "the-plurality-a-better-myth-for-ai", "a-constraint-theory-of-technology"];
@@ -28,7 +29,7 @@ export default function Home() {
       <section className="prose">
         <h1>{site.name}</h1>
         <p className="subtitle">{site.tagline}</p>
-        <p className="lede">{author.short_bio}</p>
+        <p className="lede"><Bio text={author.short_bio} /></p>
         <p>
           <Link className="button" href="/work-with-me">Consulting, advising and collaboration</Link>
         </p>
