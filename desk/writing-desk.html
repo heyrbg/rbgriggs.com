@@ -1,0 +1,393 @@
+<title>Writing Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: a writer's desk. Summary strip, then list + reading pane side by side; one column on phones. */
+:root {
+  --bg: #fbfaf7;
+  --surface: #f3f1ec;
+  --raised: #ffffff;
+  --text: #1d1c1a;
+  --muted: #6b675f;
+  --rule: #e2ded5;
+  --accent: #a23490;
+  --accent-soft: #f6e6f3;
+  --draft: #9a5b00;
+  --draft-soft: #fbf0dc;
+  --live: #1f7a4d;
+  --live-soft: #e3f3ea;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141412; --surface: #1d1c19; --raised: #23221f; --text: #e9e6df; --muted: #9c978c; --rule: #2e2c28;
+    --accent: #d57cc6; --accent-soft: #2a1a27; --draft: #e0a64a; --draft-soft: #2b2416; --live: #5cc28f; --live-soft: #16271e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141412; --surface: #1d1c19; --raised: #23221f; --text: #e9e6df; --muted: #9c978c; --rule: #2e2c28;
+  --accent: #d57cc6; --accent-soft: #2a1a27; --draft: #e0a64a; --draft-soft: #2b2416; --live: #5cc28f; --live-soft: #16271e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 72rem; margin: 0 auto; padding-inline: 16px; padding-block: 1.5rem 3rem; }
+a { color: var(--accent); text-underline-offset: 0.15em; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1.5rem; margin-bottom: 1.25rem; }
+.eyebrow { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.2rem; }
+h1 { font-family: var(--serif); font-weight: 500; font-size: 2.1rem; line-height: 1.1; margin: 0; text-wrap: balance; }
+.sync { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sync code { font-family: var(--mono); font-size: 0.78rem; }
+
+nav.tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; border-bottom: 1px solid var(--rule); margin-bottom: 1.25rem; }
+nav.tabs button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 0.55rem 0.2rem; margin-right: 1rem; cursor: pointer; color: var(--muted); font-weight: 500; display: inline-flex; gap: 0.45rem; align-items: baseline; }
+nav.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+nav.tabs .count { font-variant-numeric: tabular-nums; font-size: 0.8rem; background: var(--surface); border-radius: 999px; padding: 0 0.5rem; }
+
+.pane { display: grid; grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr); gap: 1.75rem; align-items: start; }
+@media (max-width: 760px) { .pane { grid-template-columns: minmax(0, 1fr); } }
+
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.item { width: 100%; text-align: left; background: var(--raised); border: 1px solid var(--rule); border-radius: 8px; padding: 0.8rem 0.9rem; cursor: pointer; display: grid; gap: 0.3rem; }
+.item:hover { border-color: var(--muted); }
+.item[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.item .t { font-family: var(--serif); font-size: 1.08rem; font-weight: 500; line-height: 1.25; }
+.item .s { color: var(--muted); font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.item .m { color: var(--muted); font-size: 0.75rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
+
+.pill { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.5rem; border-radius: 999px; width: max-content; }
+.pill::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
+.pill.draft, .pill.drafting { color: var(--draft); background: var(--draft-soft); }
+.pill.published { color: var(--live); background: var(--live-soft); }
+.pill.untouched { color: var(--muted); background: var(--surface); }
+.pill.untouched::before { background: transparent; border: 1px solid currentColor; }
+.pill.uncommitted { color: var(--accent); background: var(--accent-soft); }
+
+.detail { min-width: 0; background: var(--raised); border: 1px solid var(--rule); border-radius: 10px; padding: 1.4rem 1.6rem 1.8rem; }
+.detail h2 { font-family: var(--serif); font-weight: 500; font-size: 1.75rem; line-height: 1.15; margin: 0.4rem 0 0.5rem; text-wrap: balance; }
+.detail .lede { font-family: var(--serif); font-size: 1.12rem; line-height: 1.5; color: var(--text); margin: 0 0 1rem; max-width: 65ch; }
+dl.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 0.6rem 1rem; margin: 0 0 1rem; padding: 0.8rem 0; border-block: 1px solid var(--rule); }
+dl.facts div { min-width: 0; }
+dl.facts dt { font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+dl.facts dd { margin: 0.1rem 0 0; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+.links { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; font-size: 0.88rem; margin-bottom: 1rem; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; padding: 0; list-style: none; }
+.tags li { font-size: 0.74rem; border: 1px solid var(--rule); border-radius: 999px; padding: 0.05rem 0.55rem; color: var(--muted); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0 0 1.25rem; }
+.btn { border: 1px solid var(--accent); color: var(--accent); background: transparent; border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.85rem; font-weight: 500; cursor: pointer; }
+.btn.solid { background: var(--accent); color: var(--bg); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.hint { font-size: 0.78rem; color: var(--muted); }
+
+.prose { font-family: var(--serif); font-size: 1.08rem; line-height: 1.65; max-width: 65ch; }
+.prose h2, .prose h3 { font-family: var(--serif); font-weight: 500; line-height: 1.2; }
+.prose h2 { font-size: 1.35rem; margin: 2rem 0 0.6rem; }
+.prose h3 { font-size: 1.15rem; margin: 1.5rem 0 0.4rem; }
+.prose blockquote { margin: 1.2rem 0; padding-left: 1rem; border-left: 2px solid var(--rule); color: var(--muted); }
+.prose li { margin: 0.25rem 0; }
+.prose code { font-family: var(--mono); font-size: 0.85em; }
+.prose pre { overflow-x: auto; background: var(--surface); padding: 0.8rem; border-radius: 6px; }
+
+.empty { border: 1px dashed var(--rule); border-radius: 10px; padding: 2rem 1.5rem; color: var(--muted); text-align: center; }
+.empty strong { display: block; color: var(--text); font-family: var(--serif); font-weight: 500; font-size: 1.2rem; margin-bottom: 0.3rem; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-bottom: 1rem; }
+.filters input[type="search"] { flex: 1 1 14rem; min-width: 0; padding: 0.45rem 0.7rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--raised); }
+.filters select { padding: 0.42rem 0.5rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--raised); }
+.filters .n { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.group { margin: 0 0 1.5rem; }
+.group h3 { font-family: var(--serif); font-weight: 500; font-size: 1.1rem; margin: 0 0 0.5rem; display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; align-items: baseline; }
+.group h3 .c { font-family: var(--sans); font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.idea { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr) auto; gap: 0.2rem 0.8rem; align-items: start; padding: 0.7rem 0; border-top: 1px solid var(--rule); }
+.idea:first-of-type { border-top: 0; }
+.meter { display: inline-flex; gap: 2px; padding-top: 0.35rem; }
+.meter i { width: 0.45rem; height: 0.75rem; border-radius: 2px; background: var(--rule); }
+.meter i.on { background: var(--accent); }
+.idea .name { font-weight: 600; font-size: 0.92rem; }
+.idea .claim { color: var(--muted); font-size: 0.86rem; margin-top: 0.15rem; }
+.idea .proposed { font-family: var(--serif); font-style: italic; font-size: 0.92rem; margin-top: 0.25rem; }
+.idea .side { display: grid; gap: 0.35rem; justify-items: end; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--accent); font-size: 0.78rem; cursor: pointer; text-decoration: underline; text-underline-offset: 0.15em; }
+@media (max-width: 520px) { .idea { grid-template-columns: 2.2rem minmax(0, 1fr); } .idea .side { grid-column: 2; justify-items: start; } }
+
+footer.help { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: 0.82rem; color: var(--muted); max-width: 65ch; }
+footer.help p { margin: 0.35rem 0; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); background: var(--text); color: var(--bg); padding: 0.5rem 0.9rem; border-radius: 6px; font-size: 0.85rem; }
+@media (prefers-reduced-motion: no-preference) { .item, .btn { transition: border-color .15s, box-shadow .15s; } }
+</style>
+
+<div class="wrap">
+  <header class="top" data-uncommentable>
+    <div>
+      <p class="eyebrow">rbgriggs.com</p>
+      <h1>Writing Desk</h1>
+    </div>
+    <p class="sync" id="sync">Connecting to your desk…</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections" data-uncommentable>
+    <button role="tab" id="tab-drafts" aria-selected="true" data-tab="drafts">Drafts <span class="count" id="n-drafts">–</span></button>
+    <button role="tab" id="tab-published" aria-selected="false" data-tab="published">Published <span class="count" id="n-published">–</span></button>
+    <button role="tab" id="tab-ideas" aria-selected="false" data-tab="ideas">Ideas <span class="count" id="n-ideas">–</span></button>
+  </nav>
+
+  <section id="notes-view" class="pane">
+    <ul class="list" id="note-list" data-uncommentable></ul>
+    <article class="detail" id="note-detail" hidden></article>
+    <div class="empty" id="notes-empty">
+      <strong>Loading notes</strong>
+      Your drafts and published notes appear here once the desk connects.
+    </div>
+  </section>
+
+  <section id="ideas-view" hidden>
+    <div class="filters" data-uncommentable>
+      <input type="search" id="idea-q" aria-label="Search ideas" placeholder="Search ideas by name, claim or essay">
+      <label for="idea-strength" class="hint">Strength</label>
+      <select id="idea-strength">
+        <option value="0">Any</option>
+        <option value="2">2 and up</option>
+        <option value="3" selected>3 only</option>
+      </select>
+      <label for="idea-status" class="hint">Status</label>
+      <select id="idea-status">
+        <option value="">Any</option>
+        <option value="untouched">Untouched</option>
+        <option value="drafting">Drafting</option>
+        <option value="published">Published</option>
+      </select>
+      <span class="n" id="idea-n"></span>
+    </div>
+    <div id="idea-groups"></div>
+  </section>
+
+  <footer class="help" data-uncommentable>
+    <p><strong>How this desk works.</strong> Notes live as markdown files in the site's GitHub repo. Writing and publishing happen in your conversation with Claude, which updates this desk after each change.</p>
+    <p>To work on a draft here, open it and use <em>Comment on this note</em>, or select a passage and use <em>Comment on selection</em>. Then choose <em>Send to Claude</em> in the comment so Claude picks it up.</p>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const state = { tab: "drafts", notes: [], ideaDocs: [], meta: null, selected: null, loaded: false };
+  try { state.tab = localStorage.getItem("desk.tab") || "drafts"; } catch (_) {}
+
+  // ---- formatting ----------------------------------------------------------
+  const fmtDate = (iso) => {
+    if (!iso) return "—";
+    const d = new Date(iso.length === 10 ? iso + "T12:00:00" : iso);
+    return isNaN(d) ? iso : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  };
+  const ago = (iso) => {
+    if (!iso) return "—";
+    const s = (Date.now() - new Date(iso)) / 1000;
+    if (s < 60) return "just now";
+    const steps = [[60, "minute"], [3600, "hour"], [86400, "day"], [604800, "week"], [2629800, "month"], [31557600, "year"]];
+    let unit = steps[0];
+    for (const st of steps) if (s >= st[0]) unit = st;
+    const n = Math.floor(s / unit[0]);
+    return `${n} ${unit[1]}${n === 1 ? "" : "s"} ago`;
+  };
+  const el = (tag, attrs = {}, ...kids) => {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kid of kids.flat()) if (kid != null) e.append(kid);
+    return e;
+  };
+  const pill = (status, label) => el("span", { class: `pill ${status}`, text: label || status });
+  const toast = (msg) => { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2200); };
+  const md = (src) => {
+    const html = window.marked ? window.marked.parse(src || "") : (src || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    return window.DOMPurify ? window.DOMPurify.sanitize(html) : html;
+  };
+
+  // ---- tabs ------------------------------------------------------------------
+  function setTab(tab) {
+    state.tab = tab;
+    try { localStorage.setItem("desk.tab", tab); } catch (_) {}
+    for (const b of document.querySelectorAll("nav.tabs button")) b.setAttribute("aria-selected", String(b.dataset.tab === tab));
+    $("notes-view").hidden = tab === "ideas";
+    $("ideas-view").hidden = tab !== "ideas";
+    if (tab !== "ideas") renderNotes();
+    else renderIdeas();
+  }
+  for (const b of document.querySelectorAll("nav.tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
+
+  // ---- notes -------------------------------------------------------------------
+  function renderNotes() {
+    const want = state.tab === "published" ? "published" : "draft";
+    const notes = state.notes.filter((n) => n.status === want).sort((a, b) => String(b.updated || b.date).localeCompare(String(a.updated || a.date)));
+    const list = $("note-list"), detail = $("note-detail"), empty = $("notes-empty");
+    list.replaceChildren();
+    if (!notes.length) {
+      list.hidden = true; detail.hidden = true; empty.hidden = false;
+      empty.replaceChildren(
+        el("strong", { text: !state.loaded ? "Loading notes" : want === "draft" ? "No drafts right now" : "Nothing published yet" }),
+        !state.loaded ? "Your drafts and published notes appear here once the desk connects."
+          : want === "draft" ? "Ask Claude to start a note, or pick one from the Ideas tab." : "Drafts appear here after you ask Claude to publish them.",
+      );
+      return;
+    }
+    empty.hidden = true; list.hidden = false;
+    if (!notes.some((n) => n.slug === state.selected)) state.selected = notes[0].slug;
+    for (const n of notes) {
+      list.append(el("li", {}, el("button", {
+        class: "item", "aria-current": String(n.slug === state.selected),
+        onclick: () => { state.selected = n.slug; renderNotes(); if (matchMedia("(max-width: 760px)").matches) detail.scrollIntoView({ behavior: "smooth", block: "start" }); },
+      },
+        el("span", { style: "display:flex;gap:.4rem;flex-wrap:wrap" }, pill(n.status), n.uncommitted ? pill("uncommitted", "unsaved edits") : null),
+        el("span", { class: "t", text: n.title }),
+        n.summary ? el("span", { class: "s", text: n.summary }) : null,
+        el("span", { class: "m" }, el("span", { text: `Changed ${ago(n.updated)}` }), el("span", { text: `${n.words.toLocaleString()} words` })),
+      )));
+    }
+    renderDetail(notes.find((n) => n.slug === state.selected));
+  }
+
+  function renderDetail(n) {
+    const d = $("note-detail");
+    d.hidden = false;
+    d.setAttribute("data-comment-target", "");
+    const body = el("div", { class: "prose", id: "note-body" });
+    body.innerHTML = md(n.body);
+    const selBtn = el("button", { class: "btn", id: "comment-selection", disabled: true, text: "Comment on selection" });
+    const noteBtn = el("button", { class: "btn solid", id: "comment-note", text: "Comment on this note" });
+    noteBtn.addEventListener("click", () => openComposer({ element: d }));
+    selBtn.addEventListener("click", () => {
+      const sel = getSelection();
+      if (sel && sel.rangeCount && body.contains(sel.getRangeAt(0).commonAncestorContainer)) openComposer({ range: sel.getRangeAt(0) });
+    });
+    d.replaceChildren(
+      el("div", { style: "display:flex;gap:.4rem;flex-wrap:wrap" }, pill(n.status), n.uncommitted ? pill("uncommitted", "unsaved edits") : null),
+      el("h2", { text: n.title }),
+      n.summary ? el("p", { class: "lede", text: n.summary }) : null,
+      el("dl", { class: "facts" },
+        fact("Note date", fmtDate(n.date)),
+        fact("Started", fmtDate(n.created)),
+        fact("Last changed", n.updated ? `${fmtDate(n.updated)} · ${ago(n.updated)}` : "Not yet saved"),
+        fact("Revisions", String(n.revisions)),
+        fact("Length", `${n.words.toLocaleString()} words`),
+      ),
+      el("div", { class: "links" },
+        n.url ? el("a", { href: n.url, target: "_blank", rel: "noopener", text: "Live page ↗" }) : el("span", { class: "hint", text: "Not live yet" }),
+        el("a", { href: n.github, target: "_blank", rel: "noopener", text: "File on GitHub ↗" }),
+        ...(n.related || []).map((r) => el("a", { href: `https://rbgriggs.com/essays/${r.slug}`, target: "_blank", rel: "noopener", text: `${r.title} ↗` })),
+      ),
+      n.tags?.length ? el("ul", { class: "tags" }, n.tags.map((t) => el("li", { text: t }))) : null,
+      el("div", { class: "toolbar", "data-uncommentable": true }, noteBtn, selBtn, comments ? null : el("span", { class: "hint", text: "Commenting is available when you open the desk on claude.ai." })),
+      body,
+    );
+    if (!comments) { noteBtn.disabled = true; }
+  }
+  const fact = (k, v) => el("div", {}, el("dt", { text: k }), el("dd", { text: v }));
+
+  document.addEventListener("selectionchange", () => {
+    const btn = $("comment-selection"), body = $("note-body");
+    if (!btn || !body) return;
+    const sel = getSelection();
+    btn.disabled = !comments || !(sel && !sel.isCollapsed && sel.rangeCount && body.contains(sel.getRangeAt(0).commonAncestorContainer));
+  });
+
+  let comments = null;
+  async function openComposer(target) {
+    if (!comments) return;
+    try {
+      const r = await comments.openComposer(target);
+      if (!r.opened) toast("Click inside the desk first, then try again.");
+    } catch (_) { toast("Comments aren't available in this view."); }
+  }
+
+  // ---- ideas -------------------------------------------------------------------
+  const ideaControls = ["idea-q", "idea-strength", "idea-status"];
+  for (const id of ideaControls) $(id).addEventListener("input", renderIdeas);
+
+  function renderIdeas() {
+    const q = $("idea-q").value.trim().toLowerCase();
+    const min = Number($("idea-strength").value);
+    const status = $("idea-status").value;
+    const root = $("idea-groups");
+    root.replaceChildren();
+    if (!state.loaded) { root.append(el("div", { class: "empty" }, el("strong", { text: "Loading ideas" }), "The 213 ideas extracted from your essays appear here once the desk connects.")); return; }
+    let shown = 0;
+    const docs = [...state.ideaDocs].sort((a, b) => a.essay.localeCompare(b.essay));
+    for (const d of docs) {
+      const ideas = d.ideas.filter((i) => i.strength >= min && (!status || i.status === status) &&
+        (!q || `${i.name} ${i.claim} ${i.title} ${d.essay}`.toLowerCase().includes(q)))
+        .sort((a, b) => b.strength - a.strength);
+      if (!ideas.length) continue;
+      shown += ideas.length;
+      root.append(el("section", { class: "group" },
+        el("h3", {}, el("a", { href: d.url, target: "_blank", rel: "noopener", text: d.essay }), el("span", { class: "c", text: `${ideas.length} of ${d.ideas.length}` })),
+        ideas.map((i) => el("div", { class: "idea" },
+          el("span", { class: "meter", "aria-label": `Strength ${i.strength} of 3` }, [1, 2, 3].map((k) => el("i", { class: k <= i.strength ? "on" : "" }))),
+          el("div", { style: "min-width:0" },
+            el("div", { class: "name", text: i.name }),
+            el("div", { class: "claim", text: i.claim }),
+            i.title ? el("div", { class: "proposed", text: `Possible title: ${i.title}` }) : null,
+          ),
+          el("div", { class: "side" },
+            pill(i.status, i.status),
+            i.note ? el("button", { class: "linkbtn", text: "Open note", onclick: () => { const n = state.notes.find((x) => x.slug === i.note); if (n) { state.selected = n.slug; setTab(n.status === "published" ? "published" : "drafts"); } } })
+              : el("button", { class: "linkbtn", text: "Copy request for Claude", onclick: () => copy(`Draft a note from the idea "${i.name}" (${i.id}).`) }),
+          ),
+        )),
+      ));
+    }
+    $("idea-n").textContent = `${shown} shown`;
+    if (!shown) root.append(el("div", { class: "empty" }, el("strong", { text: "No ideas match" }), "Loosen the strength or status filter, or clear the search."));
+  }
+
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); toast("Copied. Paste it into your chat with Claude."); }
+    catch (_) { toast(text); }
+  }
+
+  // ---- data --------------------------------------------------------------------
+  function renderCounts() {
+    const drafts = state.notes.filter((n) => n.status === "draft").length;
+    $("n-drafts").textContent = drafts;
+    $("n-published").textContent = state.notes.length - drafts;
+    const all = state.ideaDocs.flatMap((d) => d.ideas);
+    $("n-ideas").textContent = all.length;
+    const m = state.meta;
+    $("sync").replaceChildren(m
+      ? el("span", {}, `Synced ${ago(m.synced_at)} from commit `, el("code", { text: m.commit || "?" }))
+      : document.createTextNode(state.loaded ? "Not synced yet. Ask Claude to sync the desk." : "Connecting to your desk…"));
+  }
+  function rerender() { renderCounts(); state.tab === "ideas" ? renderIdeas() : renderNotes(); }
+
+  async function boot() {
+    setTab(state.tab);
+    const db = window.claude ? await window.claude.use("db") : null;
+    try { comments = window.claude ? await window.claude.use("comments") : null; } catch (_) { comments = null; }
+    if (!db) {
+      state.loaded = true;
+      $("sync").textContent = "Open this desk on claude.ai while signed in to see your notes.";
+      rerender();
+      return;
+    }
+    const onErr = () => { $("sync").textContent = "Lost connection to the desk. Reload to try again."; };
+    db.collection("notes").onSnapshot((s) => { state.notes = s.docs.map((d) => d.data()); state.loaded = true; rerender(); }, onErr);
+    db.collection("ideas").onSnapshot((s) => { state.ideaDocs = s.docs.map((d) => d.data()); rerender(); }, onErr);
+    db.doc("meta/sync").onSnapshot((d) => { state.meta = d.exists ? d.data() : null; renderCounts(); }, onErr);
+    setInterval(renderCounts, 60000);
+  }
+  boot();
+})();
+</script>

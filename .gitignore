@@ -19,3 +19,4 @@ next-env.d.ts
 
 /public/notes/
 .next-dev/
+.desk/

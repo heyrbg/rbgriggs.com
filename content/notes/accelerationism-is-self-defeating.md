@@ -9,6 +9,7 @@ summary: >-
   and you can experiment boldly at the edges.
 tags: ["accelerationism", "e/acc", "constraint theory", "regulation", "AI governance", "backlash", "evo-devo", "explore/exploit"]
 related: ["a-constraint-theory-of-technology", "manifesto", "the-price-of-innovation"]
+idea: "a-constraint-theory-of-technology#reactive-limits-removing-constraints-undermines-acceleration"
 draft: true
 ---
 

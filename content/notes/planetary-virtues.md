@@ -8,6 +8,7 @@ summary: >-
   exemplar of living well with it.
 tags: ["virtue ethics", "phronesis", "Aristotle", "Hans Jonas", "planetary", "accelerating change"]
 related: ["what-does-a-good-digital-life-look", "our-planetary-predicament", "how-philosophy-makes-technology-better"]
+idea: "what-does-a-good-digital-life-look#virtue-ethics-depends-on-stable-contexts"
 draft: true
 ---
 
