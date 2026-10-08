@@ -57,7 +57,7 @@ Ideas that recur across several essays. Each could be a canonical piece that the
 
 ## Resolve before writing
 
-- **Your definition of life in the manifesto.** It defines life as a cosmic drive toward wholeness that includes atoms and galaxies, but the same essay says life has happened only once, on Earth. A micro article on "Life itself as the foundation for technology ethics" needs to settle which you mean.
+- ~~**Your definition of life in the manifesto.**~~ Resolved: the manifesto now distinguishes "the impulse of life" from "living things."
 - **Margaret Mead.** The four speeds of cultural change in "What Does a Good Digital Life Look Like?" run close to Mead's post-, co- and prefigurative cultures (*Culture and Commitment*, 1970), which the essay doesn't cite. Naming her and saying what you add makes the piece stronger and more citable.
 - **Peirce.** The essay never uses the word "abduction"; that framing comes from you and this analysis. Say so in the micro article and engage Peirce directly ("il lume naturale", his instinct-for-guessing argument).
 - **Duplicates to merge, not repeat:** dimensional poverty (2024 and 2026 versions), "not big enough" (constraint theory and manifesto), and the embeddings passage (majesty and high-dimensional society).

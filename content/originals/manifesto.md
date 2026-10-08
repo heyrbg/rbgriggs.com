@@ -4,7 +4,7 @@ subtitle: "A manifesto"
 slug: "manifesto"
 date: "2024-08-05"
 original_url: "https://www.techforlife.com/p/manifesto"
-wordcount: 3422
+wordcount: 3429
 ---
 
 ![](https://substackcdn.com/image/fetch/$s_!_A35!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F774d89f9-ba63-4878-8cba-ef68d8101143_1344x896.webp)
@@ -134,7 +134,7 @@ Life isn’t just the story of human beings here on earth; it’s much bigger th
 
 Whatever drove those first atoms to coalesce into molecules, and gasses into planets, and planets into galaxies—that same impulse is what drove chemical bonds to evolve into cells and tissues and consciousness and magnificently complex ecosystems of interdependent organisms and eventually **you**—_that_ is the impulse of life. 
 
-We don’t know why or how life happened; we just know that it _did_ happen. And as far as we can tell, the emergence of life has **happened only once**.  This makes life **the most precious thing in the entire universe**. 
+We don’t know why or how matter first came alive; we just know that it _did_. And as far as we can tell, that leap, from the impulse of life to living things, has **happened only once**. This makes life **the most precious thing in the entire universe**. 
 
 This also makes Earth the most interesting _planet_ in the universe. Earth alone has somehow harbored the conditions necessary for life to evolve into the most advanced form that has ever existed: us, human beings. 
 

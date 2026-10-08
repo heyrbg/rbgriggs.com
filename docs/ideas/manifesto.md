@@ -48,7 +48,7 @@ The founding manifesto of Tech for Life, arguing that only "life itself" is big 
 - **In the essay:** "The story of life"; stipulated rather than argued, and combined with the "happened only once" rarity claim from life-is-special-enough. Anchor: "life is that universal drive towards increasing wholeness, structure, and integrity."
 - **Stands alone because:** It is a distinctive, cosmological definition that frames technology as continuous with life's process.
 - **Micro-article:** "A Cosmic Definition of Life for the Technology Age" · "Is technology part of evolution or separate from it?" · (1) No scientific consensus on life's definition; (2) Life as the drive to wholeness; (3) Technology as life's extension.
-- **Prior art to engage:** Teilhard de Chardin; Kevin Kelly's *What Technology Wants* (the technium); Christopher Alexander's wholeness; Schrödinger's *What Is Life?*. Not cited in the essay. Note internal tension: cosmic "life" includes atoms and galaxies while elsewhere life is said to have happened only once on Earth.
+- **Prior art to engage:** Teilhard de Chardin; Kevin Kelly's *What Technology Wants* (the technium); Christopher Alexander's wholeness; Schrödinger's *What Is Life?*. Not cited in the essay. Resolved Oct 2026: the essay now distinguishes "the impulse of life" (cosmic) from "living things" (the leap that has "happened only once"). A micro article can use that distinction directly.
 - **Connections:** life-is-special-enough, can-technology-be-beautiful, infinite-dimensionality
 - **Strength:** 2
 

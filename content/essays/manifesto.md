@@ -38,11 +38,13 @@ concepts:
       Griggs's argument that markets, governments, philosophy and religion, culture and politics, and the
       "muddle through" status quo are each too crude, fragmented, pluralistic or arms-race-driven to guide
       advanced technology such as AI, synthetic biology and geoengineering.
-  - term: "Life (grandest definition)"
+  - term: "Life (the impulse of life and living things)"
     definition: >-
-      Griggs defines life as "that universal drive towards increasing wholeness, structure, and integrity,"
-      reaching from atoms forming molecules through cells, consciousness and ecosystems to human beings.
-      Because, as far as we know, it has happened only once, he calls life the most precious thing in the
+      Griggs uses "life" in two related senses. In its grandest sense, the impulse of life is "that universal
+      drive towards increasing wholeness, structure, and integrity," reaching from atoms forming molecules
+      through cells, consciousness and ecosystems to human beings. Living things are the point where that
+      impulse produced matter that is alive. That leap, "from the impulse of life to living things," has
+      as far as we know happened only once, which is why he calls life the most precious thing in the
       universe.
   - term: "Stewards of life / foundational duty"
     definition: >-
@@ -75,7 +77,7 @@ concepts:
 3. **A world out of whack.** All the dimensions of human imagination once grew in unison. Since the industrial revolution technology has grown exponentially while the others stagnated, and its growing power of *causality* now escapes our power of *choice*.
 4. **Symptoms.** The imbalance shows in a future imagined only in technological terms, in technological "choices" that are really demands, in the urge to virtualize everything, in innovation driven only by market greed or state fear, in unstoppable momentum, and in a view of humans as flawed machines.
 5. **Technology isn't the culprit.** Technology is a great triumph of human imagination; it becomes a problem only when nothing else is big enough to guide it. Markets, governments, philosophy and religion, culture and politics, and the status quo are all "not big enough."
-6. **Life itself.** Life is the one thing everyone can agree on, and it transcends philosophy, politics, religion and culture. Defined in the grandest terms as the universal drive towards wholeness, structure and integrity, life has happened only once as far as we know.
+6. **Life itself.** Life is the one thing everyone can agree on, and it transcends philosophy, politics, religion and culture. In its grandest sense, life is the universal drive towards wholeness, structure and integrity, an impulse running from the Big Bang through atoms, cells and ecosystems. Living things are where that impulse produced matter that is alive, and as far as we know that leap, "from the impulse of life to living things," has happened only once.
 7. **Stewardship and right relationship.** As evolutionary agents, humans have a foundational duty to steward life. Nature is the foundation, humanity the steward, technology the extension; technology's purpose is "to empower humanity to best fulfill its role in expanding life's integrity and possibility."
 8. **From principles to practices.** We must understand life's principles and turn them into practices for guiding technology, starting with adaptation, the balance between creation and protection.
 9. **Technology in love.** Griggs imagines technology in love with humanity, nature and life, aimed at playing the infinite game of life.
