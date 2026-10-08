@@ -123,6 +123,38 @@ footer.help { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(-
 footer.help p { margin: 0.35rem 0; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); background: var(--text); color: var(--bg); padding: 0.5rem 0.9rem; border-radius: 6px; font-size: 0.85rem; }
 @media (prefers-reduced-motion: no-preference) { .item, .btn { transition: border-color .15s, box-shadow .15s; } }
+
+/* interaction */
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1rem; }
+.btn.ghost { border-color: var(--rule); color: var(--text); }
+.btn.ghost:hover { border-color: var(--muted); }
+.btn.live { border-color: var(--live); color: var(--live); }
+.panel { border: 1px solid var(--rule); background: var(--surface); border-radius: 8px; padding: 1rem; margin: 0 0 1.25rem; display: grid; gap: 0.75rem; }
+.panel h4 { margin: 0; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.panel p { margin: 0; }
+.field { display: grid; gap: 0.25rem; }
+.field label { font-size: 0.78rem; font-weight: 600; }
+.field input, .field textarea { width: 100%; padding: 0.5rem 0.65rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--raised); }
+.field textarea { resize: vertical; line-height: 1.55; }
+textarea.body-edit { font-family: var(--serif); font-size: 1.02rem; min-height: 22rem; }
+.row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.75rem; }
+.banner { border-radius: 8px; padding: 0.7rem 0.9rem; font-size: 0.86rem; display: grid; gap: 0.3rem; margin: 0 0 1rem; }
+.banner.wait { background: var(--draft-soft); color: var(--text); border: 1px solid var(--draft); }
+.banner.proposal { background: var(--accent-soft); border: 1px solid var(--accent); }
+.banner strong { font-weight: 600; }
+.activity { list-style: none; margin: 1.5rem 0 0; padding: 1rem 0 0; border-top: 1px solid var(--rule); display: grid; gap: 0.45rem; font-size: 0.82rem; }
+.activity li { display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; align-items: baseline; color: var(--muted); }
+.activity li .what { color: var(--text); }
+.pill.pending { color: var(--draft); background: var(--draft-soft); }
+.pill.done { color: var(--live); background: var(--live-soft); }
+.pill.failed { color: var(--accent); background: var(--accent-soft); }
+.pill.requested { color: var(--accent); background: var(--accent-soft); }
+.diff { font-family: var(--serif); font-size: 1.02rem; line-height: 1.65; white-space: pre-wrap; max-width: 65ch; background: var(--raised); border: 1px solid var(--rule); border-radius: 6px; padding: 0.9rem 1rem; max-height: 28rem; overflow: auto; }
+.diff ins { background: var(--live-soft); color: var(--live); text-decoration: none; }
+.diff del { background: var(--accent-soft); color: var(--accent); }
+.idea .ask { grid-column: 2 / -1; }
+.newnote { margin: 0 0 0.75rem; }
 </style>
 
 <div class="wrap">
@@ -141,7 +173,10 @@ footer.help p { margin: 0.35rem 0; }
   </nav>
 
   <section id="notes-view" class="pane">
-    <ul class="list" id="note-list" data-uncommentable></ul>
+    <div style="min-width:0">
+      <div class="newnote" id="newnote" data-uncommentable></div>
+      <ul class="list" id="note-list" data-uncommentable></ul>
+    </div>
     <article class="detail" id="note-detail" hidden></article>
     <div class="empty" id="notes-empty">
       <strong>Loading notes</strong>
@@ -172,20 +207,26 @@ footer.help p { margin: 0.35rem 0; }
 
   <footer class="help" data-uncommentable>
     <p><strong>How this desk works.</strong> Notes live as markdown files in the site's GitHub repo. Writing and publishing happen in your conversation with Claude, which updates this desk after each change.</p>
-    <p>To work on a draft here, open it and use <em>Comment on this note</em>, or select a passage and use <em>Comment on selection</em>. Then choose <em>Send to Claude</em> in the comment so Claude picks it up.</p>
+    <p>Buttons here send requests to Claude: draft an idea, revise a note, save your own edits, change details, publish. Each request shows as <em>Waiting for Claude</em> until it has been applied to the site, then the desk updates.</p>
+    <p>You can also comment on any note, or select a passage and comment on just that, and choose <em>Send to Claude</em>.</p>
   </footer>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.2.0/diff.min.js"></script>
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
-  const state = { tab: "drafts", notes: [], ideaDocs: [], meta: null, selected: null, loaded: false };
+  const state = {
+    tab: "drafts", notes: [], ideaDocs: [], meta: null, requests: [], proposals: {}, loaded: false,
+    selected: null, panel: null, askIdea: null, newOpen: false, inputs: {}, deferred: false,
+  };
   try { state.tab = localStorage.getItem("desk.tab") || "drafts"; } catch (_) {}
+  let db = null, comments = null;
 
-  // ---- formatting ----------------------------------------------------------
+  // ---- helpers ---------------------------------------------------------------
   const fmtDate = (iso) => {
     if (!iso) return "—";
     const d = new Date(iso.length === 10 ? iso + "T12:00:00" : iso);
@@ -205,53 +246,151 @@ footer.help p { margin: 0.35rem 0; }
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs)) {
       if (v == null || v === false) continue;
-      if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? "" : v);
+      if (k === "class") e.className = v;
+      else if (k === "text") e.textContent = v;
+      else if (k === "value") e.value = v;
+      else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? "" : v);
     }
-    for (const kid of kids.flat()) if (kid != null) e.append(kid);
+    for (const kid of kids.flat()) if (kid != null && kid !== false) e.append(kid);
     return e;
   };
-  const pill = (status, label) => el("span", { class: `pill ${status}`, text: label || status });
-  const toast = (msg) => { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2200); };
+  const pill = (cls, label) => el("span", { class: `pill ${cls}`, text: label || cls });
+  const toast = (msg) => { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 3200); };
   const md = (src) => {
     const html = window.marked ? window.marked.parse(src || "") : (src || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
     return window.DOMPurify ? window.DOMPurify.sanitize(html) : html;
   };
+  // Text inputs keep their contents across re-renders.
+  const bound = (key, initial, attrs) => {
+    const tag = attrs.tag || "textarea";
+    const node = el(tag, { ...attrs, tag: null, id: `in-${key}`, value: state.inputs[key] ?? initial ?? "" });
+    node.addEventListener("input", () => { state.inputs[key] = node.value; refreshButtons(); });
+    return node;
+  };
+  const val = (key, fallback = "") => (state.inputs[key] ?? fallback);
+  let buttonFns = [];
+  const refreshButtons = () => buttonFns.forEach((f) => f());
+  const onInput = (f) => { buttonFns.push(f); f(); };
 
-  // ---- tabs ------------------------------------------------------------------
+  // ---- requests ----------------------------------------------------------------
+  const LABEL = {
+    draft_idea: (r) => `Draft a note from the idea "${r.idea_name}"`,
+    new_note: () => "Start a new note",
+    replace_body: () => "Apply my text edits",
+    revise: (r) => `Revise: ${r.instructions}`,
+    update_fields: (r) => `Change ${Object.keys(r.fields || {}).join(", ")}`,
+    publish: () => "Publish",
+    unpublish: () => "Unpublish (back to draft)",
+    accept_proposal: () => "Accept Claude's revision",
+    discard_proposal: () => "Discard Claude's revision",
+  };
+  const label = (r) => (LABEL[r.type] ? LABEL[r.type](r) : r.type);
+  const pendingFor = (pred) => state.requests.filter((r) => r.status === "pending" && pred(r));
+
+  async function submit(req, anchorEl, brief) {
+    if (!db) { toast("Open the desk on claude.ai to send requests."); return false; }
+    const id = "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    let anchor = null, canSend = "off";
+    try {
+      if (comments) {
+        anchor = await comments.anchorFor(anchorEl);
+        canSend = await comments.canSendToClaude();
+      }
+    } catch (_) { canSend = "off"; }
+    const text = `Writing Desk request ${id}: ${brief}`.slice(0, 3500);
+    let sent = false;
+    if (canSend === "available" && anchor) {
+      try { await comments.sendToClaude({ anchor, text }); sent = true; } catch (_) { sent = false; }
+    }
+    try {
+      await db.collection("requests").doc(id).set({ ...req, id, status: "pending", created_at: new Date().toISOString(), notified: sent });
+    } catch (e) {
+      toast("Couldn't save the request. Reload the desk and try again.");
+      return false;
+    }
+    toast(sent ? "Sent to Claude." : "Saved. Tell Claude “check the desk” to apply it.");
+    return true;
+  }
+
+  // ---- tabs ----------------------------------------------------------------------
   function setTab(tab) {
     state.tab = tab;
     try { localStorage.setItem("desk.tab", tab); } catch (_) {}
     for (const b of document.querySelectorAll("nav.tabs button")) b.setAttribute("aria-selected", String(b.dataset.tab === tab));
     $("notes-view").hidden = tab === "ideas";
     $("ideas-view").hidden = tab !== "ideas";
-    if (tab !== "ideas") renderNotes();
-    else renderIdeas();
+    render();
   }
   for (const b of document.querySelectorAll("nav.tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
 
-  // ---- notes -------------------------------------------------------------------
+  // ---- new note ------------------------------------------------------------------
+  function renderNewNote() {
+    const box = $("newnote");
+    box.replaceChildren();
+    if (state.tab !== "drafts" || !state.loaded) return;
+    if (!state.newOpen) {
+      box.append(el("button", { class: "btn ghost", text: "+ Start a new note", onclick: () => { state.newOpen = true; render(); $("in-new")?.focus(); } }));
+      return;
+    }
+    const send = el("button", { class: "btn solid", text: "Send to Claude", disabled: !val("new").trim() });
+    onInput(() => { send.disabled = !val("new").trim(); });
+    send.addEventListener("click", async () => {
+      const prompt = val("new").trim();
+      if (await submit({ type: "new_note", prompt }, box, `Start a new note. My thoughts: ${prompt}`)) {
+        delete state.inputs.new; state.newOpen = false; render();
+      }
+    });
+    box.append(el("div", { class: "panel" },
+      el("h4", { text: "New note" }),
+      el("div", { class: "field" },
+        el("label", { for: "in-new", text: "What's it about? Paste your thinking as roughly as you like." }),
+        bound("new", "", { rows: 6 })),
+      el("div", { class: "row" }, send, el("button", { class: "btn ghost", text: "Cancel", onclick: () => { state.newOpen = false; render(); } })),
+    ));
+  }
+
+  // ---- notes list ----------------------------------------------------------------
   function renderNotes() {
+    renderNewNote();
     const want = state.tab === "published" ? "published" : "draft";
     const notes = state.notes.filter((n) => n.status === want).sort((a, b) => String(b.updated || b.date).localeCompare(String(a.updated || a.date)));
     const list = $("note-list"), detail = $("note-detail"), empty = $("notes-empty");
     list.replaceChildren();
+    const queued = want === "draft" ? pendingFor((r) => r.type === "new_note" || r.type === "draft_idea") : [];
+    for (const r of queued) {
+      list.append(el("li", {}, el("div", { class: "item", style: "cursor:default" },
+        pill("pending", "Waiting for Claude"),
+        el("span", { class: "t", text: r.type === "draft_idea" ? r.idea_name : "New note" }),
+        el("span", { class: "s", text: r.type === "draft_idea" ? (r.notes || r.idea_claim || "") : r.prompt }),
+        el("span", { class: "m", text: `Requested ${ago(r.created_at)}` }),
+      )));
+    }
     if (!notes.length) {
-      list.hidden = true; detail.hidden = true; empty.hidden = false;
+      detail.hidden = true;
+      empty.hidden = !!queued.length && state.loaded;
       empty.replaceChildren(
         el("strong", { text: !state.loaded ? "Loading notes" : want === "draft" ? "No drafts right now" : "Nothing published yet" }),
         !state.loaded ? "Your drafts and published notes appear here once the desk connects."
-          : want === "draft" ? "Ask Claude to start a note, or pick one from the Ideas tab." : "Drafts appear here after you ask Claude to publish them.",
+          : want === "draft" ? "Start a new note above, or pick one from the Ideas tab." : "Open a draft and choose Publish when it's ready.",
       );
       return;
     }
-    empty.hidden = true; list.hidden = false;
-    if (!notes.some((n) => n.slug === state.selected)) state.selected = notes[0].slug;
+    empty.hidden = true;
+    if (!notes.some((n) => n.slug === state.selected)) { state.selected = notes[0].slug; state.panel = null; }
     for (const n of notes) {
+      const waiting = pendingFor((r) => r.note === n.slug).length;
+      const proposal = state.proposals[n.slug]?.status === "open";
       list.append(el("li", {}, el("button", {
         class: "item", "aria-current": String(n.slug === state.selected),
-        onclick: () => { state.selected = n.slug; renderNotes(); if (matchMedia("(max-width: 760px)").matches) detail.scrollIntoView({ behavior: "smooth", block: "start" }); },
+        onclick: () => {
+          if (state.selected !== n.slug) state.panel = null;
+          state.selected = n.slug; render();
+          if (matchMedia("(max-width: 760px)").matches) detail.scrollIntoView({ behavior: "smooth", block: "start" });
+        },
       },
-        el("span", { style: "display:flex;gap:.4rem;flex-wrap:wrap" }, pill(n.status), n.uncommitted ? pill("uncommitted", "unsaved edits") : null),
+        el("span", { class: "row", style: "gap:.4rem" }, pill(n.status), n.uncommitted ? pill("uncommitted", "unsaved edits") : null,
+          waiting ? pill("pending", `${waiting} waiting`) : null, proposal ? pill("requested", "revision ready") : null),
         el("span", { class: "t", text: n.title }),
         n.summary ? el("span", { class: "s", text: n.summary }) : null,
         el("span", { class: "m" }, el("span", { text: `Changed ${ago(n.updated)}` }), el("span", { text: `${n.words.toLocaleString()} words` })),
@@ -260,21 +399,23 @@ footer.help p { margin: 0.35rem 0; }
     renderDetail(notes.find((n) => n.slug === state.selected));
   }
 
+  // ---- note detail ---------------------------------------------------------------
+  const fact = (k, v) => el("div", {}, el("dt", { text: k }), el("dd", { text: v }));
+
   function renderDetail(n) {
     const d = $("note-detail");
     d.hidden = false;
     d.setAttribute("data-comment-target", "");
     const body = el("div", { class: "prose", id: "note-body" });
     body.innerHTML = md(n.body);
-    const selBtn = el("button", { class: "btn", id: "comment-selection", disabled: true, text: "Comment on selection" });
-    const noteBtn = el("button", { class: "btn solid", id: "comment-note", text: "Comment on this note" });
-    noteBtn.addEventListener("click", () => openComposer({ element: d }));
-    selBtn.addEventListener("click", () => {
-      const sel = getSelection();
-      if (sel && sel.rangeCount && body.contains(sel.getRangeAt(0).commonAncestorContainer)) openComposer({ range: sel.getRangeAt(0) });
-    });
+    const pending = pendingFor((r) => r.note === n.slug);
+    const proposal = state.proposals[n.slug];
+    const history = state.requests.filter((r) => r.note === n.slug).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 8);
+    const toggle = (p) => () => { state.panel = state.panel === p ? null : p; render(); };
+    const isDraft = n.status === "draft";
+
     d.replaceChildren(
-      el("div", { style: "display:flex;gap:.4rem;flex-wrap:wrap" }, pill(n.status), n.uncommitted ? pill("uncommitted", "unsaved edits") : null),
+      el("div", { class: "row", style: "gap:.4rem" }, pill(n.status), n.uncommitted ? pill("uncommitted", "unsaved edits") : null),
       el("h2", { text: n.title }),
       n.summary ? el("p", { class: "lede", text: n.summary }) : null,
       el("dl", { class: "facts" },
@@ -290,12 +431,149 @@ footer.help p { margin: 0.35rem 0; }
         ...(n.related || []).map((r) => el("a", { href: `https://rbgriggs.com/essays/${r.slug}`, target: "_blank", rel: "noopener", text: `${r.title} ↗` })),
       ),
       n.tags?.length ? el("ul", { class: "tags" }, n.tags.map((t) => el("li", { text: t }))) : null,
-      el("div", { class: "toolbar", "data-uncommentable": true }, noteBtn, selBtn, comments ? null : el("span", { class: "hint", text: "Commenting is available when you open the desk on claude.ai." })),
-      body,
+      pending.length ? el("div", { class: "banner wait", "data-uncommentable": true },
+        el("strong", { text: "Waiting for Claude" }),
+        pending.map((r) => el("span", { text: `${label(r)} · ${ago(r.created_at)}` }))) : null,
+      proposal?.status === "open" ? proposalBanner(n, proposal) : null,
+      el("div", { class: "actions", "data-uncommentable": true },
+        el("button", { class: "btn ghost", "aria-expanded": String(state.panel === "edit"), text: "Edit text", onclick: toggle("edit") }),
+        el("button", { class: "btn ghost", "aria-expanded": String(state.panel === "revise"), text: "Ask Claude to revise", onclick: toggle("revise") }),
+        el("button", { class: "btn ghost", "aria-expanded": String(state.panel === "details"), text: "Edit details", onclick: toggle("details") }),
+        el("button", { class: isDraft ? "btn live" : "btn ghost", "aria-expanded": String(state.panel === "publish"), text: isDraft ? "Publish…" : "Unpublish…", onclick: toggle("publish") }),
+        el("button", { class: "btn ghost", text: "Comment", disabled: !comments, onclick: () => openComposer({ element: d }) }),
+        el("button", { class: "btn ghost", id: "comment-selection", text: "Comment on selection", disabled: true, onclick: () => {
+          const sel = getSelection();
+          if (sel && sel.rangeCount && body.contains(sel.getRangeAt(0).commonAncestorContainer)) openComposer({ range: sel.getRangeAt(0) });
+        } }),
+      ),
+      panelFor(n, d),
+      state.panel === "edit" ? null : body,
+      history.length ? el("ul", { class: "activity", "data-uncommentable": true },
+        el("li", {}, el("h4", { text: "Activity", style: "margin:0;font-size:.72rem;letter-spacing:.07em;text-transform:uppercase" })),
+        history.map((r) => el("li", {},
+          pill(r.status, r.status === "pending" ? "waiting" : r.status),
+          el("span", { class: "what", text: label(r) }),
+          el("span", { text: ago(r.done_at || r.created_at) }),
+          r.result ? el("span", { text: `· ${r.result}` }) : null,
+        ))) : null,
     );
-    if (!comments) { noteBtn.disabled = true; }
   }
-  const fact = (k, v) => el("div", {}, el("dt", { text: k }), el("dd", { text: v }));
+
+  function proposalBanner(n, p) {
+    const view = el("div", { class: "diff" });
+    if (window.Diff) {
+      for (const part of window.Diff.diffWords(n.body, p.body)) {
+        view.append(part.added ? el("ins", { text: part.value }) : part.removed ? el("del", { text: part.value }) : document.createTextNode(part.value));
+      }
+    } else view.textContent = p.body;
+    const busy = pendingFor((r) => r.note === n.slug && /proposal/.test(r.type)).length > 0;
+    const box = el("div", { class: "banner proposal", "data-uncommentable": true },
+      el("strong", { text: "Claude's proposed revision" }),
+      p.summary ? el("span", { text: p.summary }) : null,
+      el("span", { class: "hint", text: `Proposed ${ago(p.created_at)}. Green is added, struck through is removed.` }),
+      view,
+    );
+    box.append(el("div", { class: "row" },
+      el("button", { class: "btn solid", text: "Accept revision", disabled: busy, onclick: () => submit({ type: "accept_proposal", note: n.slug, proposal: p.id }, box, `Accept your proposed revision of "${n.title}" (${n.slug}).`) }),
+      el("button", { class: "btn ghost", text: "Discard", disabled: busy, onclick: () => submit({ type: "discard_proposal", note: n.slug, proposal: p.id }, box, `Discard your proposed revision of "${n.title}" (${n.slug}).`) }),
+    ));
+    return box;
+  }
+
+  function panelFor(n, anchorEl) {
+    const close = () => { state.panel = null; render(); };
+    const cancel = el("button", { class: "btn ghost", text: "Cancel", onclick: close });
+    const key = (k) => `${n.slug}:${k}`;
+
+    if (state.panel === "edit") {
+      const save = el("button", { class: "btn solid", text: "Save edits" });
+      onInput(() => { save.disabled = val(key("body"), n.body) === n.body; });
+      save.addEventListener("click", async () => {
+        const body = val(key("body"), n.body);
+        if (await submit({ type: "replace_body", note: n.slug, body }, anchorEl, `Apply my text edits to "${n.title}" (${n.slug}). The full edited text is in the desk.`)) {
+          delete state.inputs[key("body")]; close();
+        }
+      });
+      const panel = el("div", { class: "panel", "data-uncommentable": true },
+        el("h4", { text: "Edit text (markdown)" }),
+        el("div", { class: "field" }, el("label", { for: `in-${key("body")}`, text: "Your edits replace the note's text once Claude applies them." }),
+          bound(key("body"), n.body, { class: "body-edit", rows: 24 })),
+        el("div", { class: "row" }, save, cancel),
+      );
+      return panel;
+    }
+
+    if (state.panel === "revise") {
+      const sel = getSelection();
+      const bodyEl = $("note-body");
+      const passage = sel && !sel.isCollapsed && bodyEl && sel.rangeCount && bodyEl.contains(sel.getRangeAt(0).commonAncestorContainer) ? sel.toString().trim() : (state.inputs[key("passage")] || "");
+      if (passage) state.inputs[key("passage")] = passage;
+      const send = el("button", { class: "btn solid", text: "Send to Claude" });
+      onInput(() => { send.disabled = !val(key("revise")).trim(); });
+      send.addEventListener("click", async () => {
+        const instructions = val(key("revise")).trim();
+        const req = { type: "revise", note: n.slug, instructions, ...(passage ? { passage } : {}) };
+        const brief = `Propose a revision of "${n.title}" (${n.slug}): ${instructions}${passage ? `\nFocus on this passage: "${passage.slice(0, 600)}"` : ""}`;
+        if (await submit(req, anchorEl, brief)) { delete state.inputs[key("revise")]; delete state.inputs[key("passage")]; close(); }
+      });
+      const panel = el("div", { class: "panel", "data-uncommentable": true },
+        el("h4", { text: "Ask Claude to revise" }),
+        passage ? el("p", { class: "hint", text: `Passage: "${passage.length > 240 ? passage.slice(0, 240) + "…" : passage}"` })
+          : el("p", { class: "hint", text: "Tip: select a passage in the note before opening this to focus the revision on it." }),
+        el("div", { class: "field" }, el("label", { for: `in-${key("revise")}`, text: "What should change?" }),
+          bound(key("revise"), "", { rows: 4, placeholder: "Tighten the opening, add the nuclear power example, cut the last open question…" })),
+        el("p", { class: "hint", text: "Claude posts a proposed revision here for you to accept or discard." }),
+        el("div", { class: "row" }, send, cancel),
+      );
+      return panel;
+    }
+
+    if (state.panel === "details") {
+      const fields = { title: n.title, summary: n.summary, date: n.date, tags: (n.tags || []).join(", ") };
+      const changed = () => {
+        const out = {};
+        for (const [k, v] of Object.entries(fields)) { const now = val(key(k), v).trim(); if (now !== String(v).trim()) out[k] = k === "tags" ? now.split(",").map((s) => s.trim()).filter(Boolean) : now; }
+        return out;
+      };
+      const save = el("button", { class: "btn solid", text: "Save details" });
+      onInput(() => { save.disabled = !Object.keys(changed()).length; });
+      save.addEventListener("click", async () => {
+        const f = changed();
+        const brief = `Change details of "${n.title}" (${n.slug}): ` + Object.entries(f).map(([k, v]) => `${k} → ${Array.isArray(v) ? v.join(", ") : v}`).join("; ");
+        if (await submit({ type: "update_fields", note: n.slug, fields: f }, anchorEl, brief)) {
+          for (const k of Object.keys(fields)) delete state.inputs[key(k)];
+          close();
+        }
+      });
+      const panel = el("div", { class: "panel", "data-uncommentable": true },
+        el("h4", { text: "Edit details" }),
+        el("div", { class: "field" }, el("label", { for: `in-${key("title")}`, text: "Title" }), bound(key("title"), fields.title, { tag: "input", type: "text" })),
+        el("div", { class: "field" }, el("label", { for: `in-${key("summary")}`, text: "Summary (the sentence AI systems quote)" }), bound(key("summary"), fields.summary, { rows: 3 })),
+        el("div", { class: "grid2" },
+          el("div", { class: "field" }, el("label", { for: `in-${key("date")}`, text: "Note date" }), bound(key("date"), fields.date, { tag: "input", type: "date" })),
+          el("div", { class: "field" }, el("label", { for: `in-${key("tags")}`, text: "Tags (comma-separated)" }), bound(key("tags"), fields.tags, { tag: "input", type: "text" })),
+        ),
+        el("div", { class: "row" }, save, cancel),
+      );
+      return panel;
+    }
+
+    if (state.panel === "publish") {
+      const isDraft = n.status === "draft";
+      const go = el("button", { class: "btn solid", text: isDraft ? "Publish" : "Unpublish" });
+      go.addEventListener("click", async () => {
+        if (await submit({ type: isDraft ? "publish" : "unpublish", note: n.slug }, anchorEl, `${isDraft ? "Publish" : "Unpublish"} "${n.title}" (${n.slug}).`)) close();
+      });
+      return el("div", { class: "panel", "data-uncommentable": true },
+        el("h4", { text: isDraft ? "Publish this note" : "Unpublish this note" }),
+        el("p", { text: isDraft
+          ? "It will appear on rbgriggs.com, in the notes RSS feed and in llms.txt a minute or two after Claude applies it."
+          : "It will come off rbgriggs.com and the feeds, and go back to being a draft." }),
+        el("div", { class: "row" }, go, cancel),
+      );
+    }
+    return null;
+  }
 
   document.addEventListener("selectionchange", () => {
     const btn = $("comment-selection"), body = $("note-body");
@@ -304,7 +582,6 @@ footer.help p { margin: 0.35rem 0; }
     btn.disabled = !comments || !(sel && !sel.isCollapsed && sel.rangeCount && body.contains(sel.getRangeAt(0).commonAncestorContainer));
   });
 
-  let comments = null;
   async function openComposer(target) {
     if (!comments) return;
     try {
@@ -313,9 +590,8 @@ footer.help p { margin: 0.35rem 0; }
     } catch (_) { toast("Comments aren't available in this view."); }
   }
 
-  // ---- ideas -------------------------------------------------------------------
-  const ideaControls = ["idea-q", "idea-strength", "idea-status"];
-  for (const id of ideaControls) $(id).addEventListener("input", renderIdeas);
+  // ---- ideas -----------------------------------------------------------------------
+  for (const id of ["idea-q", "idea-strength", "idea-status"]) $(id).addEventListener("input", () => renderIdeas());
 
   function renderIdeas() {
     const q = $("idea-q").value.trim().toLowerCase();
@@ -323,7 +599,7 @@ footer.help p { margin: 0.35rem 0; }
     const status = $("idea-status").value;
     const root = $("idea-groups");
     root.replaceChildren();
-    if (!state.loaded) { root.append(el("div", { class: "empty" }, el("strong", { text: "Loading ideas" }), "The 213 ideas extracted from your essays appear here once the desk connects.")); return; }
+    if (!state.loaded) { root.append(el("div", { class: "empty" }, el("strong", { text: "Loading ideas" }), "The ideas extracted from your essays appear here once the desk connects.")); return; }
     let shown = 0;
     const docs = [...state.ideaDocs].sort((a, b) => a.essay.localeCompare(b.essay));
     for (const d of docs) {
@@ -334,57 +610,86 @@ footer.help p { margin: 0.35rem 0; }
       shown += ideas.length;
       root.append(el("section", { class: "group" },
         el("h3", {}, el("a", { href: d.url, target: "_blank", rel: "noopener", text: d.essay }), el("span", { class: "c", text: `${ideas.length} of ${d.ideas.length}` })),
-        ideas.map((i) => el("div", { class: "idea" },
-          el("span", { class: "meter", "aria-label": `Strength ${i.strength} of 3` }, [1, 2, 3].map((k) => el("i", { class: k <= i.strength ? "on" : "" }))),
-          el("div", { style: "min-width:0" },
-            el("div", { class: "name", text: i.name }),
-            el("div", { class: "claim", text: i.claim }),
-            i.title ? el("div", { class: "proposed", text: `Possible title: ${i.title}` }) : null,
-          ),
-          el("div", { class: "side" },
-            pill(i.status, i.status),
-            i.note ? el("button", { class: "linkbtn", text: "Open note", onclick: () => { const n = state.notes.find((x) => x.slug === i.note); if (n) { state.selected = n.slug; setTab(n.status === "published" ? "published" : "drafts"); } } })
-              : el("button", { class: "linkbtn", text: "Copy request for Claude", onclick: () => copy(`Draft a note from the idea "${i.name}" (${i.id}).`) }),
-          ),
-        )),
+        ideas.map((i) => ideaRow(i)),
       ));
     }
     $("idea-n").textContent = `${shown} shown`;
     if (!shown) root.append(el("div", { class: "empty" }, el("strong", { text: "No ideas match" }), "Loosen the strength or status filter, or clear the search."));
   }
 
-  async function copy(text) {
-    try { await navigator.clipboard.writeText(text); toast("Copied. Paste it into your chat with Claude."); }
-    catch (_) { toast(text); }
+  function ideaRow(i) {
+    const requested = pendingFor((r) => r.type === "draft_idea" && r.idea === i.id).length > 0;
+    let side;
+    if (i.note) side = el("button", { class: "linkbtn", text: "Open note", onclick: () => { const n = state.notes.find((x) => x.slug === i.note); if (n) { state.selected = n.slug; state.panel = null; setTab(n.status === "published" ? "published" : "drafts"); } } });
+    else if (requested) side = el("span", { class: "hint", text: "Draft requested" });
+    else side = el("button", { class: "btn ghost", style: "padding:.25rem .6rem;font-size:.78rem", text: state.askIdea === i.id ? "Close" : "Draft this", onclick: () => { state.askIdea = state.askIdea === i.id ? null : i.id; render(); $(`in-idea:${i.id}`)?.focus(); } });
+    const row = el("div", { class: "idea" },
+      el("span", { class: "meter", "aria-label": `Strength ${i.strength} of 3` }, [1, 2, 3].map((k) => el("i", { class: k <= i.strength ? "on" : "" }))),
+      el("div", { style: "min-width:0" },
+        el("div", { class: "name", text: i.name }),
+        el("div", { class: "claim", text: i.claim }),
+        i.title ? el("div", { class: "proposed", text: `Possible title: ${i.title}` }) : null,
+      ),
+      el("div", { class: "side" }, requested ? pill("requested", "requested") : pill(i.status, i.status), side),
+    );
+    if (state.askIdea === i.id && !i.note && !requested) {
+      const k = `idea:${i.id}`;
+      const send = el("button", { class: "btn solid", text: "Send to Claude" });
+      send.addEventListener("click", async () => {
+        const notes = val(k).trim();
+        const brief = `Draft a note from the idea "${i.name}" (${i.id}).${notes ? ` My angle: ${notes}` : ""}`;
+        if (await submit({ type: "draft_idea", idea: i.id, idea_name: i.name, idea_claim: i.claim, notes }, row, brief)) {
+          delete state.inputs[k]; state.askIdea = null; render();
+        }
+      });
+      row.append(el("div", { class: "ask panel", "data-uncommentable": true },
+        el("div", { class: "field" }, el("label", { for: `in-${k}`, text: "Your angle or notes (optional)" }),
+          bound(k, "", { rows: 3, placeholder: "What you'd want the note to argue, examples to use, what to leave out…" })),
+        el("div", { class: "row" }, send, el("button", { class: "btn ghost", text: "Cancel", onclick: () => { state.askIdea = null; render(); } })),
+      ));
+    }
+    return row;
   }
 
-  // ---- data --------------------------------------------------------------------
+  // ---- rendering + data ------------------------------------------------------------
   function renderCounts() {
     const drafts = state.notes.filter((n) => n.status === "draft").length;
     $("n-drafts").textContent = drafts;
     $("n-published").textContent = state.notes.length - drafts;
-    const all = state.ideaDocs.flatMap((d) => d.ideas);
-    $("n-ideas").textContent = all.length;
-    const m = state.meta;
+    $("n-ideas").textContent = state.ideaDocs.reduce((s, d) => s + d.ideas.length, 0);
+    const m = state.meta, waiting = state.requests.filter((r) => r.status === "pending").length;
     $("sync").replaceChildren(m
-      ? el("span", {}, `Synced ${ago(m.synced_at)} from commit `, el("code", { text: m.commit || "?" }))
+      ? el("span", {}, `Synced ${ago(m.synced_at)} from commit `, el("code", { text: m.commit || "?" }), waiting ? ` · ${waiting} waiting for Claude` : "")
       : document.createTextNode(state.loaded ? "Not synced yet. Ask Claude to sync the desk." : "Connecting to your desk…"));
   }
-  function rerender() { renderCounts(); state.tab === "ideas" ? renderIdeas() : renderNotes(); }
+  const typing = () => {
+    const a = document.activeElement;
+    return a && (a.tagName === "TEXTAREA" || (a.tagName === "INPUT" && a.type !== "search")) && a.closest("#note-detail, #idea-groups, #newnote");
+  };
+  function render() {
+    renderCounts();
+    if (typing()) { state.deferred = true; return; }
+    state.deferred = false;
+    buttonFns = [];
+    state.tab === "ideas" ? renderIdeas() : renderNotes();
+  }
+  document.addEventListener("focusout", () => setTimeout(() => { if (state.deferred && !typing()) render(); }, 0));
 
   async function boot() {
     setTab(state.tab);
-    const db = window.claude ? await window.claude.use("db") : null;
+    db = window.claude ? await window.claude.use("db") : null;
     try { comments = window.claude ? await window.claude.use("comments") : null; } catch (_) { comments = null; }
     if (!db) {
       state.loaded = true;
       $("sync").textContent = "Open this desk on claude.ai while signed in to see your notes.";
-      rerender();
+      render();
       return;
     }
     const onErr = () => { $("sync").textContent = "Lost connection to the desk. Reload to try again."; };
-    db.collection("notes").onSnapshot((s) => { state.notes = s.docs.map((d) => d.data()); state.loaded = true; rerender(); }, onErr);
-    db.collection("ideas").onSnapshot((s) => { state.ideaDocs = s.docs.map((d) => d.data()); rerender(); }, onErr);
+    db.collection("notes").onSnapshot((s) => { state.notes = s.docs.map((d) => d.data()); state.loaded = true; render(); }, onErr);
+    db.collection("ideas").onSnapshot((s) => { state.ideaDocs = s.docs.map((d) => d.data()); render(); }, onErr);
+    db.collection("requests").onSnapshot((s) => { state.requests = s.docs.map((d) => d.data()); render(); }, onErr);
+    db.collection("proposals").onSnapshot((s) => { state.proposals = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); render(); }, onErr);
     db.doc("meta/sync").onSnapshot((d) => { state.meta = d.exists ? d.data() : null; renderCounts(); }, onErr);
     setInterval(renderCounts, 60000);
   }

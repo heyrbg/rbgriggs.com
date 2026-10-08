@@ -8,4 +8,4 @@ idea: ""         # optional: the idea it develops, e.g. "the-reverse-turing-test
 draft: true      # visible in `npm run dev`, never published until removed
 ---
 
-Write freely. Files starting with _ are ignored.
+Write freely, without first person: notes are co-written with Claude. Files starting with _ are ignored.

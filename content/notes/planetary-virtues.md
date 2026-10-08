@@ -27,7 +27,7 @@ of people and generations not yet born.
 
 This is the territory Hans Jonas mapped in *The Imperative of Responsibility*: traditional ethics was
 built for a world where the range of human action was small and its effects were close in space and time.
-Jonas answered with a new imperative of responsibility. My question is different: if the scale of action
+Jonas answered with a new imperative of responsibility. The question here is different: if the scale of action
 is now planetary, what would the corresponding *virtues* be? Planetary scale demands planetary virtues.
 
 There is a second problem, and it is a problem of speed.
@@ -46,6 +46,6 @@ Open questions:
   in between?
 - Can exemplars be replaced by something else: simulations, stories, communities that run ahead of the
   rest of us?
-- Is "adaptability" itself the virtue, as I suggested in
+- Is "adaptability" itself the virtue, as suggested in
   [What Does a Good Digital Life Look Like?](/essays/what-does-a-good-digital-life-look), or is that a
   dodge?

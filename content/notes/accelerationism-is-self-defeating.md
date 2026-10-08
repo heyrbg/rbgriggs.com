@@ -22,7 +22,7 @@ draft: true
 Effective accelerationism has a simple theory of progress: constraints slow technology down, so remove
 them. Let the market move as fast as it can.
 
-The problem is that this misunderstands what a constraint is. As I argued in
+The problem is that this misunderstands what a constraint is. As argued in
 [A Constraint Theory of Technology](/essays/a-constraint-theory-of-technology), constraints are not just
 limits. They also enable. And crucially, they don't go away when you ignore them. Technologies that emerge
 from an unconstrained market still meet limits; those limits just arrive later, downstream of the market.
@@ -56,7 +56,7 @@ Seen this way, backlash is not irrational. It is what a society does when it fea
 and nothing else is protecting it. The reactive layers are trying to protect a core that the market treated
 as friction.
 
-Life solved this problem long ago. As I put it in [Tech for Life](/essays/manifesto), life has two drives:
+Life solved this problem long ago. As [Tech for Life](/essays/manifesto) puts it, life has two drives:
 it wants to *evolve*, exploring "every possible niche until the possibility space is saturated," and it
 wants to *persist*, conserving "the most successful experiments that have proven to work." Adaptation is
 the balance between them. "Too much creation threatens life's ability to persist, while too much
