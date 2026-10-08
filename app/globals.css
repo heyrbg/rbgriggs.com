@@ -4,8 +4,8 @@
   --text: #1d1c1a;
   --muted: #6b675f;
   --rule: #e2ded5;
-  --accent: #8a3b12;
-  --accent-soft: #f4e7dc;
+  --accent: #a23490;
+  --accent-soft: #f6e6f3;
   --measure: 40rem;
 }
 
@@ -16,8 +16,8 @@
     --text: #e9e6df;
     --muted: #9c978c;
     --rule: #2e2c28;
-    --accent: #e39a6b;
-    --accent-soft: #2b211a;
+    --accent: #d57cc6;
+    --accent-soft: #2a1a27;
   }
 }
 
