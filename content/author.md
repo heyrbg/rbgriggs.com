@@ -21,10 +21,10 @@ consulting_examples:
 offerings:
   - title: "Consulting"
     body: "Speculative philosophy as a decision tool for technology, product and investment strategy. I help founders, product leaders and investors pressure-test the assumptions inside a roadmap or thesis, map second- and third-order effects, and anticipate how a technology will change people, markets and institutions before the data can show it. Grounded in a career building software and a successful exit."
-  - title: "Talks and keynotes"
-    body: "On AI and coordination, the high-dimensional society, philosophy for technologists, and the good digital life. Conferences, company offsites, universities."
+  - title: "Advising"
+    body: "Ongoing advisory roles for founders, boards and funds building or backing AI products and platforms: a standing philosophical sparring partner for teams who want to think rigorously about what their technology does to people and to society."
   - title: "Philosophical engagement"
-    body: "Seminars, reading groups, podcast conversations, debates and panels, written responses and commentary."
+    body: "Private seminars and reading groups, one-on-one conversations, and written responses or commentary on ideas, papers and projects."
   - title: "Collaboration"
     body: "Research projects, co-authored papers, funded inquiry, and building software in service of philosophy (for example multi-agent experiments in artificial social intelligence)."
 ---

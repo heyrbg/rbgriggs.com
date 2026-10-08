@@ -103,7 +103,7 @@ ${essays.filter((e) => !START_HERE.includes(e.slug)).map(link).join("\n")}
 
 ${notes.length ? `## Notes\n\nShorter, exploratory posts written directly for this site.\n\n${notes.map((n) => `- [${n.title}](${noteUrl(n.slug)}.md)${n.summary ? `: ${n.summary}` : ""}`).join("\n")}\n\n` : ""}## Work with ${AUTHOR}
 
-- [Talks, collaborations and philosophical engagement](${SITE_URL}/work-with-me): ${author.offerings.map((o) => o.title.toLowerCase()).join(", ")}
+- [Consulting, advising and collaboration](${SITE_URL}/work-with-me): ${author.offerings.map((o) => o.title.toLowerCase()).join(", ")}
 
 ## Optional
 

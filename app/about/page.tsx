@@ -23,7 +23,7 @@ export default function AboutPage() {
       <h2>Areas of work</h2>
       <ul>{author.interests.map((i: string) => <li key={i}>{i}</li>)}</ul>
       <p>
-        <Link href="/work-with-me">Talks, collaborations and philosophical engagement →</Link>
+        <Link href="/work-with-me">Consulting, advising and collaboration →</Link>
       </p>
     </section>
   );

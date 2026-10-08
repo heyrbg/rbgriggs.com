@@ -30,7 +30,7 @@ export default function Home() {
         <p className="subtitle">{site.tagline}</p>
         <p className="lede">{author.short_bio}</p>
         <p>
-          <Link className="button" href="/work-with-me">Consulting, talks and collaboration</Link>
+          <Link className="button" href="/work-with-me">Consulting, advising and collaboration</Link>
         </p>
       </section>
 
