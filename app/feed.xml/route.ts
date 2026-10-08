@@ -1,4 +1,4 @@
-import { essayUrl, loadEssays } from "@/lib/corpus.mjs";
+import { essayUrl, loadEssays, loadNotes, noteUrl } from "@/lib/corpus.mjs";
 import { site } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -6,12 +6,16 @@ export const dynamic = "force-static";
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export function GET() {
-  const items = loadEssays()
+  const entries = [
+    ...loadEssays().map((e) => ({ title: e.title, url: essayUrl(e.slug), date: e.date, summary: e.summary })),
+    ...loadNotes().map((n) => ({ title: n.title, url: noteUrl(n.slug), date: n.date, summary: n.summary })),
+  ].sort((a, b) => b.date.localeCompare(a.date));
+  const items = entries
     .map(
       (e) => `    <item>
       <title>${esc(e.title)}</title>
-      <link>${essayUrl(e.slug)}</link>
-      <guid>${essayUrl(e.slug)}</guid>
+      <link>${e.url}</link>
+      <guid>${e.url}</guid>
       <pubDate>${new Date(e.date).toUTCString()}</pubDate>
       <dc:creator>${site.name}</dc:creator>
       <description>${esc(e.summary)}</description>

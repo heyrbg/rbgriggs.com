@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
-import { loadEssays } from "@/lib/corpus.mjs";
+import { loadEssays, loadNotes } from "@/lib/corpus.mjs";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const essays = loadEssays();
   const latest = essays[0]?.date;
-  const pages = ["", "/essays", "/concepts", "/about", "/work-with-me", "/for-ai"].map((p) => ({
+  const pages = ["", "/essays", "/notes", "/concepts", "/about", "/work-with-me", "/for-ai"].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: latest,
   }));
@@ -13,9 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site.url}/essays/${e.slug}`, lastModified: e.date },
     { url: `${site.url}/essays/${e.slug}.md`, lastModified: e.date },
   ]);
+  const notePages = loadNotes().flatMap((n) => [
+    { url: `${site.url}/notes/${n.slug}`, lastModified: n.date },
+    { url: `${site.url}/notes/${n.slug}.md`, lastModified: n.date },
+  ]);
   const machine = ["/llms.txt", "/llms-full.txt", "/concepts.md", "/about.md", "/corpus.json"].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: latest,
   }));
-  return [...pages, ...essayPages, ...machine];
+  return [...pages, ...essayPages, ...notePages, ...machine];
 }

@@ -40,6 +40,16 @@ npm install
 npm run dev
 ```
 
+## Post a note
+
+Notes are short, unpolished posts written straight to this site, on any subject.
+
+1. Copy `content/notes/_template.md` to `content/notes/<slug>.md`.
+2. Write. Keep `draft: true` while working: drafts show in `npm run dev` but never ship.
+3. Delete the `draft` line and push. Vercel publishes the page, its markdown copy, RSS, sitemap and llms.txt entries.
+
+The `summary` line matters most: it's the sentence AI systems are most likely to quote.
+
 ## Add a new Substack post
 
 ```bash

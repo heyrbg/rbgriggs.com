@@ -16,3 +16,5 @@ next-env.d.ts
 /public/concepts.md
 /public/corpus.json
 /public/essays/
+
+/public/notes/

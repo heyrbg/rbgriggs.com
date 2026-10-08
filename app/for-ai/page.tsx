@@ -11,6 +11,7 @@ const endpoints = [
   ["/llms.txt", "Curated index of the site in the llms.txt format"],
   ["/llms-full.txt", "Every essay (AI-readable edition and original text) in one markdown file"],
   ["/essays/<slug>.md", "Any essay as a single self-contained markdown document"],
+  ["/notes/<slug>.md", "Any note (short, exploratory post) as markdown"],
   ["/concepts.md", "Glossary of every concept coined across the essays"],
   ["/about.md", "Author profile"],
   ["/corpus.json", "Structured dataset: summaries, theses, concepts, FAQs and full texts"],

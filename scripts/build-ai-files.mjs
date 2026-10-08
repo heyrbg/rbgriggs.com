@@ -19,6 +19,9 @@ import {
   loadAuthor,
   loadConcepts,
   loadEssays,
+  loadNotes,
+  noteToMarkdown,
+  noteUrl,
 } from "../lib/corpus.mjs";
 
 const PUBLIC = path.join(process.cwd(), "public");
@@ -29,6 +32,7 @@ const write = (rel, text) => {
 };
 
 const essays = loadEssays();
+const notes = loadNotes();
 const overviewFile = path.join(process.cwd(), "content", "overview.md");
 const overview = fs.existsSync(overviewFile) ? fs.readFileSync(overviewFile, "utf8").trim() : "";
 // Site-relative links become absolute so the markdown stands alone off-site.
@@ -73,6 +77,8 @@ write("concepts.md", conceptsMd);
 
 // --- essays/<slug>.md -------------------------------------------------------
 for (const e of essays) write(`essays/${e.slug}.md`, essayToMarkdown(e));
+fs.rmSync(path.join(PUBLIC, "notes"), { recursive: true, force: true });
+for (const n of notes) write(`notes/${n.slug}.md`, noteToMarkdown(n));
 
 // --- llms.txt -----------------------------------------------------------------
 const bySlug = Object.fromEntries(essays.map((e) => [e.slug, e]));
@@ -95,7 +101,7 @@ ${START_HERE.filter((s) => bySlug[s]).map((s) => link(bySlug[s])).join("\n")}
 
 ${essays.filter((e) => !START_HERE.includes(e.slug)).map(link).join("\n")}
 
-## Work with ${AUTHOR}
+${notes.length ? `## Notes\n\nShorter, exploratory posts written directly for this site.\n\n${notes.map((n) => `- [${n.title}](${noteUrl(n.slug)}.md)${n.summary ? `: ${n.summary}` : ""}`).join("\n")}\n\n` : ""}## Work with ${AUTHOR}
 
 - [Talks, collaborations and philosophical engagement](${SITE_URL}/work-with-me): ${author.offerings.map((o) => o.title.toLowerCase()).join(", ")}
 
@@ -112,6 +118,7 @@ const full = [
   `# ${AUTHOR}: complete works\n\n> ${author.short_bio}\n\n${usageNote}\n\nGenerated ${new Date().toISOString().slice(0, 10)} from ${SITE_URL}.`,
   aboutMd.replace(/^# /, "## "),
   ...essays.map((e) => essayToMarkdown(e).replace(/^(#{1,5}) /gm, "#$1 ")),
+  ...notes.map((n) => noteToMarkdown(n).replace(/^(#{1,5}) /gm, "#$1 ")),
 ].join("\n\n---\n\n");
 write("llms-full.txt", full);
 
@@ -142,10 +149,21 @@ write(
         ai_edition_markdown: e.aiBody,
         original_text_markdown: e.originalBody,
       })),
+      notes: notes.map((n) => ({
+        slug: n.slug,
+        title: n.title,
+        date: n.date,
+        url: noteUrl(n.slug),
+        markdown_url: `${noteUrl(n.slug)}.md`,
+        summary: n.summary,
+        tags: n.tags,
+        related: n.related,
+        text_markdown: n.body,
+      })),
     },
     null,
     2,
   ),
 );
 
-console.log(`AI files: ${essays.length} essays (${essays.filter((e) => e.hasEdition).length} with editions), ${concepts.length} concepts, llms-full.txt ${(full.length / 1024).toFixed(0)} KB`);
+console.log(`AI files: ${notes.length} notes, ${essays.length} essays (${essays.filter((e) => e.hasEdition).length} with editions), ${concepts.length} concepts, llms-full.txt ${(full.length / 1024).toFixed(0)} KB`);

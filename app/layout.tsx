@@ -34,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/" className="wordmark">{site.name}</Link>
           <nav aria-label="Main">
             <Link href="/essays">Essays</Link>
+            <Link href="/notes">Notes</Link>
             <Link href="/concepts">Concepts</Link>
             <Link href="/about">About</Link>
             <Link href="/work-with-me">Work with me</Link>

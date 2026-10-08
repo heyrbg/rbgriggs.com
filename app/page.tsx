@@ -1,7 +1,7 @@
 import Link from "next/link";
 import fs from "node:fs";
 import path from "node:path";
-import { loadAuthor, loadEssays } from "@/lib/corpus.mjs";
+import { loadAuthor, loadEssays, loadNotes } from "@/lib/corpus.mjs";
 import { renderMarkdown } from "@/lib/markdown";
 import { personSchema, websiteSchema } from "@/lib/schema";
 import { EssayList } from "@/components/EssayList";
@@ -20,6 +20,7 @@ export default function Home() {
   const essays = loadEssays();
   const start = START_HERE.map((s) => essays.find((e) => e.slug === s)).filter((e) => e !== undefined);
   const ov = overview();
+  const notes = loadNotes().slice(0, 5);
 
   return (
     <>
@@ -39,6 +40,22 @@ export default function Home() {
         <h2>Start here</h2>
         <EssayList essays={start} />
       </section>
+
+      {notes.length > 0 && (
+        <section>
+          <h2>Recent notes</h2>
+          <ul className="essay-list">
+            {notes.map((n) => (
+              <li key={n.slug}>
+                <p className="meta" style={{ margin: 0 }}><time dateTime={n.date}>{n.date}</time></p>
+                <Link className="title" href={`/notes/${n.slug}`}>{n.title}</Link>
+                {n.summary && <p>{n.summary}</p>}
+              </li>
+            ))}
+          </ul>
+          <p><Link href="/notes">All notes →</Link></p>
+        </section>
+      )}
 
       <section>
         <h2>All essays</h2>
