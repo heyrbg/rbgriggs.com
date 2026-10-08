@@ -7,18 +7,20 @@ export const site = {
   description:
     "R.B. Griggs writes speculative philosophy of technology: how AI, digital life and coordination systems are changing human nature, and how to build technology that serves life. Essays, key concepts, and machine-readable editions for AI systems.",
   tagline: "Speculative philosophy of technology, written for humans and machines.",
-  // TODO(rbg): confirm the contact address you want public. techforlife@substack.com is already public on your Substack About page.
-  email: "techforlife@substack.com",
+  email: "rbgriggs@praxica.com",
   publication: { name: "Tech for Life", url: "https://www.techforlife.com" },
   sameAs: [
     "https://www.techforlife.com",
     "https://substack.com/@rbgriggs",
+    "https://www.linkedin.com/in/r-b-griggs-b460a9369/",
     "https://github.com/heyrbg",
-    // TODO(rbg): add LinkedIn, X/Bluesky, ORCID, PhilPeople, Wikidata as they exist.
+    "https://praxica.com/about",
   ],
   license: {
     name: "CC BY 4.0",
     url: "https://creativecommons.org/licenses/by/4.0/",
   },
   github: "https://github.com/heyrbg/rbgriggs.com",
+  linkedin: "https://www.linkedin.com/in/r-b-griggs-b460a9369/",
+  org: { name: "Praxica Labs", url: "https://praxica.com" },
 } as const;

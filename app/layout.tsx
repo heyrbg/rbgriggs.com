@@ -50,7 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <p className="machine-links">
             <a href="/llms.txt">llms.txt</a> · <a href="/llms-full.txt">llms-full.txt</a> ·{" "}
             <a href="/corpus.json">corpus.json</a> · <a href="/feed.xml">RSS</a> ·{" "}
-            <a href={site.publication.url}>Substack</a> · <a href={site.github}>Source</a>
+            <a href={site.publication.url}>Substack</a> · <a href={site.linkedin}>LinkedIn</a> ·{" "}
+            <a href={site.org.url}>Praxica Labs</a> · <a href={site.github}>Source</a>
           </p>
         </footer>
       </body>

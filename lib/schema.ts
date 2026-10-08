@@ -13,7 +13,9 @@ export function personSchema(bio: string, interests: string[]) {
     knowsAbout: interests,
     sameAs: site.sameAs,
     email: `mailto:${site.email}`,
-    jobTitle: "Writer and philosopher of technology",
+    alternateName: "Brandon Griggs",
+    jobTitle: "Writer and philosopher of technology; founder of Praxica Labs",
+    worksFor: { "@type": "Organization", name: site.org.name, url: site.org.url },
   };
 }
 
