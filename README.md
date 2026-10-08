@@ -37,8 +37,11 @@ scripts/             Substack importer, AI-file generator (runs as `prebuild`)
 
 ```bash
 npm install
-npm run dev
+npm run dev       # http://localhost:4310, live reload, shows drafts
+npm run preview   # http://localhost:4320, production build, exactly what Vercel serves
 ```
+
+The two use separate build folders (`.next-dev` and `.next`), so they can run side by side.
 
 ## Post a note
 

@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "NEXT_DIST_DIR=.next-dev next dev -p 4310",
     "prebuild": "node scripts/build-ai-files.mjs",
     "build": "next build",
     "start": "next start",
     "import": "node scripts/import-substack.mjs",
-    "ai-files": "node scripts/build-ai-files.mjs"
+    "ai-files": "node scripts/build-ai-files.mjs",
+    "preview": "npm run build && next start -p 4320"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
