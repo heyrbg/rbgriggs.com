@@ -5,15 +5,18 @@ summary: >-
   Effective accelerationism wants to remove every constraint on technology in order to go faster. But
   constraints don't disappear when the market ignores them; they return downstream as reactive, repressive
   limits from the state, culture and ethics. By stripping away proactive constraints, e/acc triggers the
-  very backlash that slows acceleration most.
-tags: ["accelerationism", "e/acc", "constraint theory", "regulation", "AI governance", "backlash"]
+  very backlash that slows acceleration most. Evolution shows the alternative: protect what you most value,
+  and you can experiment boldly at the edges.
+tags: ["accelerationism", "e/acc", "constraint theory", "regulation", "AI governance", "backlash", "evo-devo", "explore/exploit"]
 related: ["a-constraint-theory-of-technology", "manifesto", "the-price-of-innovation"]
 draft: true
 ---
 
 <!-- DRAFT assembled from R.B.'s message on 2026-10-08 and "A Constraint Theory of Technology" (2024).
-     Quoted lines are verbatim from that essay. The nuclear power example and the Collingridge question are
-     Claude's suggestions, not from the essay: keep, cut or replace. Delete `draft: true` to publish. -->
+     Quoted lines are verbatim from that essay and the manifesto. The nuclear power example and the Collingridge question are
+     Claude's suggestions, not from the essay: keep, cut or replace. The "core and edges" section ties in the
+     manifesto's adaptation principle (quoted verbatim) per R.B.'s note; Kirschner & Gerhart and James March
+     are Claude's suggested prior art. Delete `draft: true` to publish. -->
 
 Effective accelerationism has a simple theory of progress: constraints slow technology down, so remove
 them. Let the market move as fast as it can.
@@ -46,6 +49,30 @@ signaling, and political regulation." Each of these layers is slower, blunter an
 constraint the market could have set for itself. A proactive constraint is a dial. A reactive one is a
 wall.
 
+## Protect the core, experiment at the edges
+
+Seen this way, backlash is not irrational. It is what a society does when it fears for what it most values
+and nothing else is protecting it. The reactive layers are trying to protect a core that the market treated
+as friction.
+
+Life solved this problem long ago. As I put it in [Tech for Life](/essays/manifesto), life has two drives:
+it wants to *evolve*, exploring "every possible niche until the possibility space is saturated," and it
+wants to *persist*, conserving "the most successful experiments that have proven to work." Adaptation is
+the balance between them. "Too much creation threatens life's ability to persist, while too much
+protection threatens life's ability to evolve."
+
+Evolution doesn't experiment everywhere. "Up to 5% of human DNA has remained unchanged for 200 million
+years." Because that core is ruthlessly conserved, variation at the edges can be wild without being fatal.
+The conservation is what makes the exploration possible.
+
+The same principle applies to technology: "The more confident we are in protecting what we ultimately
+value, the more experimental we can be in pursuing innovation."
+
+This is the move accelerationism misses. It treats every constraint as friction, including the ones that
+protect the core. Strip those away and people stop trusting the experiment, and the reactive layers close
+in. Protect the core credibly, and society will tolerate far more experimentation at the edges than any
+accelerationist currently gets.
+
 ## The accelerationist's best move is to constrain
 
 The irony is that the market has the most to gain from constraining itself. "The more constraints the
@@ -63,3 +90,7 @@ acceleration."
 - How does this relate to the Collingridge dilemma, that a technology is easiest to steer when we know
   least about its effects?
 - What would a constraint look like that accelerationists would *want*, because it buys speed?
+- What is the "conserved core" for AI? Which few things must be protected absolutely so that everything
+  else can be tried?
+- Evo-devo's account of conserved core processes enabling variation (Kirschner and Gerhart's "facilitated
+  variation") and James March's explore/exploit trade-off seem like the right prior art.
