@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { loadAuthor } from "@/lib/corpus.mjs";
+import { loadAuthor, loadBets } from "@/lib/corpus.mjs";
+import { renderMarkdown } from "@/lib/markdown";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function WorkWithMe() {
   const author = loadAuthor();
   const examples = author.consulting_examples ?? [];
+  const bets = loadBets();
   return (
     <>
       <section className="prose">
@@ -43,6 +45,13 @@ export default function WorkWithMe() {
           The <Link href="/essays">essays</Link> and <Link href="/concepts">key concepts</Link> are the best
           way to see how I think.
         </p>
+        {bets && (
+          <>
+            <h2 id="what-im-betting-on-now">What I&rsquo;m betting on now</h2>
+            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(bets.body) }} />
+            {bets.updated && <p className="meta">Updated {bets.updated}</p>}
+          </>
+        )}
         <h2>Get in touch</h2>
         <p>
           Email <a href={`mailto:${site.email}`}>{site.email}</a> with a sentence or two about what you have

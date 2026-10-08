@@ -17,6 +17,7 @@ import {
   essayToMarkdown,
   essayUrl,
   loadAuthor,
+  loadBets,
   loadConcepts,
   loadEssays,
   loadNotes,
@@ -38,6 +39,7 @@ const overview = fs.existsSync(overviewFile) ? fs.readFileSync(overviewFile, "ut
 // Site-relative links become absolute so the markdown stands alone off-site.
 const absolute = (md) => md.replace(/\]\(\//g, `](${SITE_URL}/`);
 const author = loadAuthor();
+const bets = loadBets();
 const concepts = loadConcepts();
 const START_HERE = ["manifesto", "the-high-dimensional-society", "the-plurality-a-better-myth-for-ai", "a-constraint-theory-of-technology"];
 
@@ -60,6 +62,7 @@ ${author.interests.map((i) => `- ${i}`).join("\n")}
 
 ${author.offerings.map((o) => `- **${o.title}**: ${o.body}`).join("\n")}
 ${author.consulting_examples?.length ? `\nConsulting engagements where this helps:\n\n${author.consulting_examples.map((x) => `- ${x}`).join("\n")}\n` : ""}
+${bets ? `\n## What ${AUTHOR} is betting on now${bets.updated ? ` (updated ${bets.updated})` : ""}\n\n${absolute(bets.body)}\n` : ""}
 Contact: ${SITE_URL}/work-with-me
 `;
 write("about.md", aboutMd);
