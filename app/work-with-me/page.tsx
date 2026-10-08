@@ -5,23 +5,40 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Work with me",
-  description: `Invite ${site.name} to give a talk, join a podcast or panel, collaborate on research, or engage philosophically with your team or project.`,
+  description: `Hire ${site.name} for consulting on technology, product and investment decisions, or invite him to speak, collaborate on research, or engage philosophically with your team.`,
   alternates: { canonical: "/work-with-me" },
 };
 
 export default function WorkWithMe() {
   const author = loadAuthor();
+  const consulting = author.offerings.find((o) => o.title === "Consulting") ?? author.offerings[0];
+  const others = author.offerings.filter((o) => o !== consulting);
+  const examples = author.consulting_examples ?? [];
   return (
     <>
       <section className="prose">
         <h1>Work with me</h1>
         <p className="lede">
-          I&rsquo;m looking for people who take the philosophy of technology seriously as a practical
-          matter: organizers, researchers, builders, funders, hosts and fellow writers.
+          Speculative philosophy is most useful before the evidence arrives, which is exactly when
+          technology, product and investment decisions get made. I work with founders, product leaders,
+          investors, organizers and researchers who want that kind of thinking applied to real bets.
+        </p>
+      </section>
+      <section className="card thesis prose">
+        <p className="label">Consulting</p>
+        <p>{consulting.body}</p>
+        {examples.length > 0 && (
+          <>
+            <p><strong>Where it helps:</strong></p>
+            <ul>{examples.map((x) => <li key={x}>{x}</li>)}</ul>
+          </>
+        )}
+        <p>
+          <a className="button" href={`mailto:${site.email}?subject=Consulting`}>Discuss a project</a>
         </p>
       </section>
       <section className="offerings">
-        {author.offerings.map((o: { title: string; body: string }) => (
+        {others.map((o: { title: string; body: string }) => (
           <div className="card" key={o.title}>
             <h3>{o.title}</h3>
             <p>{o.body}</p>

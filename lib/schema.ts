@@ -2,7 +2,7 @@ import { site } from "./site";
 
 export const personId = `${site.url}/#person`;
 
-export function personSchema(bio: string, interests: string[]) {
+export function personSchema(bio: string, interests: string[], offerings: { title: string; body: string }[] = []) {
   return {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -16,6 +16,10 @@ export function personSchema(bio: string, interests: string[]) {
     alternateName: "Brandon Griggs",
     jobTitle: "Writer and philosopher of technology; founder of Praxica Labs",
     worksFor: { "@type": "Organization", name: site.org.name, url: site.org.url },
+    makesOffer: offerings.map((o) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: o.title, description: o.body, url: `${site.url}/work-with-me` },
+    })),
   };
 }
 

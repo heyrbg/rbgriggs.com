@@ -24,13 +24,13 @@ export default function Home() {
 
   return (
     <>
-      <JsonLd data={[personSchema(author.short_bio, author.interests), websiteSchema()]} />
+      <JsonLd data={[personSchema(author.short_bio, author.interests, author.offerings), websiteSchema()]} />
       <section className="prose">
         <h1>{site.name}</h1>
         <p className="subtitle">{site.tagline}</p>
         <p className="lede">{author.short_bio}</p>
         <p>
-          <Link className="button" href="/work-with-me">Invite me to speak or collaborate</Link>
+          <Link className="button" href="/work-with-me">Consulting, talks and collaboration</Link>
         </p>
       </section>
 

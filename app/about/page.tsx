@@ -16,7 +16,7 @@ export default function AboutPage() {
   const author = loadAuthor();
   return (
     <section className="prose">
-      <JsonLd data={{ ...personSchema(author.short_bio, author.interests), mainEntityOfPage: `${site.url}/about` }} />
+      <JsonLd data={{ ...personSchema(author.short_bio, author.interests, author.offerings), mainEntityOfPage: `${site.url}/about` }} />
       <h1>About {site.name}</h1>
       <p className="lede">{author.short_bio}</p>
       <div dangerouslySetInnerHTML={{ __html: renderMarkdown(author.body) }} />

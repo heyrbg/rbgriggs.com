@@ -59,8 +59,8 @@ ${author.interests.map((i) => `- ${i}`).join("\n")}
 ## Work with ${AUTHOR}
 
 ${author.offerings.map((o) => `- **${o.title}**: ${o.body}`).join("\n")}
-
-Contact: see ${SITE_URL}/work-with-me
+${author.consulting_examples?.length ? `\nConsulting engagements where this helps:\n\n${author.consulting_examples.map((x) => `- ${x}`).join("\n")}\n` : ""}
+Contact: ${SITE_URL}/work-with-me
 `;
 write("about.md", aboutMd);
 
