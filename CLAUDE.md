@@ -30,6 +30,26 @@ After any change to `content/notes/` or `docs/ideas/` is committed:
 
 Comments R.B. leaves on a note in the desk and sends to Claude are edit requests for that note's file.
 
+### Desk requests
+
+Buttons in the desk write a document to the `requests` collection (status `pending`) and send a comment
+"Writing Desk request <id>: ..." to Claude. When one arrives, or R.B. says "check the desk":
+
+1. `ArtifactData query` on `requests` where `status == "pending"`; read the full request (it may hold a long `body`).
+2. Apply it to the repo, by `type`:
+   - `draft_idea` (`idea`, `notes`) / `new_note` (`prompt`): write a new `content/notes/<slug>.md`, `draft: true`,
+     with `idea:` set for draft_idea. Follow the drafting rules above.
+   - `replace_body` (`note`, `body`): replace the note's body with R.B.'s text; keep frontmatter and top comment.
+   - `update_fields` (`note`, `fields`: title/summary/date/tags): edit frontmatter.
+   - `publish` / `unpublish` (`note`): remove / add `draft: true`.
+   - `revise` (`note`, `instructions`, optional `passage`): do NOT edit the file. Write `proposals/<note>` as
+     `{id, note, body, summary, created_at, status: "open"}`, with `summary` one line on what changed.
+   - `accept_proposal` (`note`, `proposal`): write the proposal's body to the file; set the proposal `status: "accepted"`.
+   - `discard_proposal`: set the proposal `status: "discarded"`; no file change.
+3. Commit and push (except revise and discard), then run the desk sync above.
+4. Update the request: `status: "done"` (or `"failed"`), `done_at`, `result` (one short line), `commit`.
+5. Reply in the comment thread with what changed, and resolve it.
+
 ## Previews
 
 - `npm run dev`: http://localhost:4310 (shows drafts, builds into `.next-dev`)
