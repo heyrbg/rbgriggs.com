@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Analytics } from "@vercel/analytics/next";
 import { Newsreader, Inter } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <a href={site.org.url}>Praxica Labs</a> · <a href={site.github}>Source</a>
           </p>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
