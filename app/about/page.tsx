@@ -4,7 +4,6 @@ import { loadAuthor } from "@/lib/corpus.mjs";
 import { renderMarkdown } from "@/lib/markdown";
 import { personSchema } from "@/lib/schema";
 import { JsonLd } from "@/components/JsonLd";
-import { Bio } from "@/components/Bio";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -19,7 +18,6 @@ export default function AboutPage() {
     <section className="prose">
       <JsonLd data={{ ...personSchema(author.short_bio, author.interests, author.offerings), mainEntityOfPage: `${site.url}/about` }} />
       <h1>About {site.name}</h1>
-      <p className="lede"><Bio text={author.short_bio} /></p>
       <div dangerouslySetInnerHTML={{ __html: renderMarkdown(author.body) }} />
       <h2>Areas of work</h2>
       <ul>{author.interests.map((i: string) => <li key={i}>{i}</li>)}</ul>

@@ -39,8 +39,6 @@ export default function WorkWithMe() {
             <ul>{examples.map((x) => <li key={x}>{x}</li>)}</ul>
           </>
         )}
-        <h2>Topics I work on</h2>
-        <ul>{author.interests.map((i: string) => <li key={i}>{i}</li>)}</ul>
         <p>
           The <Link href="/essays">essays</Link> and <Link href="/concepts">key concepts</Link> are the best
           way to see how I think.
