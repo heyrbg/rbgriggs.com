@@ -25,7 +25,7 @@ compressing people into simple proxies, then overfits on them until whatever the
 what the essay calls *dimensional poverty*. AI systems that can represent meaning directly make a different
 kind of coordination possible, one where proxies map reality instead of compressing it.
 
-Seen this way, the protocols a society runs on are its proxies, and the question is what richer protocols
-would look like.
+AI, for the first time in human history, offers the possibility of protocols that coordinate human societies
+at a planetary scale without flattening human complexity into the conformity that modern-day proxies require.
 
 Progress will be posted here and in the [notes](/notes) as the writing develops.
