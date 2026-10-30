@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const p = getProject((await params).slug);
   if (!p) return {};
   return {
-    title: `${p.title} (${p.kind.toLowerCase()} in progress)`,
+    title: `${p.title} (${p.kind.toLowerCase()}, ${p.status.toLowerCase()})`,
     description: p.summary,
     alternates: { canonical: `/projects/${p.slug}` },
     openGraph: { type: "website", title: p.title, description: p.summary },
@@ -35,7 +35,8 @@ export default async function ProjectPage({ params }: Params) {
       <JsonLd
         data={{
           "@context": "https://schema.org",
-          "@type": p.kind === "Book" ? "Book" : "CreativeWork",
+          "@type": p.kind === "Book" || p.kind === "Novel" ? "Book" : p.kind === "Protocol" ? "SoftwareSourceCode" : "CreativeWork",
+          ...(p.genre ? { genre: p.genre } : {}),
           name: p.title,
           description: p.summary,
           url,
@@ -56,7 +57,7 @@ export default async function ProjectPage({ params }: Params) {
       <div className="card">
         <p className="label">Follow along</p>
         <p>
-          Notes as they're written: <a href="/notes/feed.xml">notes RSS</a>. To talk about the book, see{" "}
+          Notes as they're written: <a href="/notes/feed.xml">notes RSS</a>. To talk about it, see{" "}
           <Link href="/work-with-me">Work with me</Link>.
         </p>
       </div>

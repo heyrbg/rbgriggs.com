@@ -36,7 +36,7 @@ export default async function EssayPage({ params }: Params) {
   if (!e) notFound();
 
   const all = loadEssays();
-  const book = loadProjects().find((p) => p.essay === e.slug);
+  const built = loadProjects().filter((p) => p.essay === e.slug);
   const related = e.related.map((s: string) => all.find((x) => x.slug === s)).filter(Boolean);
   const split = e.aiBody.indexOf(FAQ_HEADING);
   const beforeFaq = split === -1 ? e.aiBody : e.aiBody.slice(0, split);
@@ -103,10 +103,15 @@ export default async function EssayPage({ params }: Params) {
             <p>{e.thesis}</p>
           </div>
         )}
-        {book && (
+        {built.length > 0 && (
           <p className="meta">
-            Now being developed into a {book.kind.toLowerCase()}:{" "}
-            <Link href={`/projects/${book.slug}`}>{book.title} →</Link>
+            Building on this essay:{" "}
+            {built.map((p, i) => (
+              <span key={p.slug}>
+                {i > 0 && " · "}
+                <Link href={`/projects/${p.slug}`}>{p.title}</Link> ({p.kind.toLowerCase()}, {p.status.toLowerCase()})
+              </span>
+            ))}
           </p>
         )}
         <p className="meta">

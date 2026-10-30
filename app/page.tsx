@@ -4,6 +4,7 @@ import { personSchema, websiteSchema } from "@/lib/schema";
 import { EssayList } from "@/components/EssayList";
 import { JsonLd } from "@/components/JsonLd";
 import { Bio } from "@/components/Bio";
+import { loadNow } from "@/lib/projects.mjs";
 import { site } from "@/lib/site";
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
   const essays = loadEssays();
   const start = START_HERE.map((s) => essays.find((e) => e.slug === s)).filter((e) => e !== undefined);
   const notes = loadNotes().slice(0, 5);
+  const now = loadNow();
 
   return (
     <>
@@ -23,6 +25,20 @@ export default function Home() {
           <Link className="button" href="/work-with-me">Consulting, advising and collaboration</Link>
         </p>
       </section>
+
+      {now.items.length > 0 && (
+        <section>
+          <h2>Currently working on</h2>
+          <ul className="essay-list">
+            {now.items.map((i) => (
+              <li key={i.title}>
+                {i.href ? <Link className="title" href={i.href}>{i.title}</Link> : <span className="title" style={{ fontSize: "1.3rem" }}>{i.title}</span>}
+                <p>{i.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section>
         <h2>Start here</h2>
