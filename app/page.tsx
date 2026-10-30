@@ -2,6 +2,7 @@ import Link from "next/link";
 import fs from "node:fs";
 import path from "node:path";
 import { loadAuthor, loadEssays, loadNotes } from "@/lib/corpus.mjs";
+import { loadProjects } from "@/lib/projects.mjs";
 import { renderMarkdown } from "@/lib/markdown";
 import { personSchema, websiteSchema } from "@/lib/schema";
 import { EssayList } from "@/components/EssayList";
@@ -22,6 +23,7 @@ export default function Home() {
   const start = START_HERE.map((s) => essays.find((e) => e.slug === s)).filter((e) => e !== undefined);
   const ov = overview();
   const notes = loadNotes().slice(0, 5);
+  const projects = loadProjects();
 
   return (
     <>
@@ -30,6 +32,12 @@ export default function Home() {
         <h1>{site.name}</h1>
         <p className="subtitle">{site.tagline}</p>
         <p className="lede"><Bio text={author.short_bio} /></p>
+        {projects.map((p) => (
+          <p key={p.slug} className="meta">
+            Now writing: <Link href={`/projects/${p.slug}`}>{p.title}</Link>, a {p.kind.toLowerCase()}
+            {p.event ? <> for {p.event.name}</> : null}
+          </p>
+        ))}
         <p>
           <Link className="button" href="/work-with-me">Consulting, advising and collaboration</Link>
         </p>

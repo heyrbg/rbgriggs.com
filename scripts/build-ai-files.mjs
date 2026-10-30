@@ -24,6 +24,7 @@ import {
   noteToMarkdown,
   noteUrl,
 } from "../lib/corpus.mjs";
+import { loadProjects } from "../lib/projects.mjs";
 
 const PUBLIC = path.join(process.cwd(), "public");
 const write = (rel, text) => {
@@ -34,6 +35,7 @@ const write = (rel, text) => {
 
 const essays = loadEssays();
 const notes = loadNotes();
+const projects = loadProjects();
 const overviewFile = path.join(process.cwd(), "content", "overview.md");
 const overview = fs.existsSync(overviewFile) ? fs.readFileSync(overviewFile, "utf8").trim() : "";
 // Site-relative links become absolute so the markdown stands alone off-site.
@@ -100,7 +102,7 @@ ${absolute(overview).replace(/^## The ideas in brief\n\n/, "")}
 - [Key concepts](${SITE_URL}/concepts.md): glossary of ${concepts.length} terms coined across the essays
 ${START_HERE.filter((s) => bySlug[s]).map((s) => link(bySlug[s])).join("\n")}
 
-## Essays
+${projects.length ? `## In progress\n\n${projects.map((p) => `- [${p.title}](${SITE_URL}/projects/${p.slug}) (${p.kind.toLowerCase()}, ${p.status.toLowerCase()}): ${p.summary}`).join("\n")}\n\n` : ""}## Essays
 
 ${essays.filter((e) => !START_HERE.includes(e.slug)).map(link).join("\n")}
 

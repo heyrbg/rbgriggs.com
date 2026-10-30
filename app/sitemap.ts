@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { loadEssays, loadNotes } from "@/lib/corpus.mjs";
+import { loadProjects } from "@/lib/projects.mjs";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -17,9 +18,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site.url}/notes/${n.slug}`, lastModified: n.date },
     { url: `${site.url}/notes/${n.slug}.md`, lastModified: n.date },
   ]);
+  const projectPages = loadProjects().map((p) => ({ url: `${site.url}/projects/${p.slug}`, lastModified: latest }));
   const machine = ["/llms.txt", "/llms-full.txt", "/concepts.md", "/about.md", "/corpus.json"].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: latest,
   }));
-  return [...pages, ...essayPages, ...notePages, ...machine];
+  return [...pages, ...essayPages, ...notePages, ...projectPages, ...machine];
 }
