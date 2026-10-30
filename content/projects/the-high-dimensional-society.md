@@ -8,7 +8,7 @@ summary: >-
   Speculative fiction set in a high-dimensional society, where AI-enabled protocols coordinate life at
   planetary scale, freeing each community to define "human scale" for itself. But as new forms of
   coordination dissolve many of today's hardest problems, this society of tomorrow discovers an entirely new
-  class of challenges humanity has never faced.
+  class of challenges humanity has no script for.
 essay: "the-high-dimensional-society"
 event:
   name: "PiBoWriMo 2026"
