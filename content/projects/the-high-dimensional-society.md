@@ -6,8 +6,8 @@ status: "In progress"
 started: "2026-11-02"
 summary: >-
   Speculative fiction set in a high-dimensional society, where AI-enabled protocols coordinate at planetary
-  scale, freeing each community to define "human scale" for itself. But in solving the worst problems of
-  today, this society of tomorrow quickly discovers new ones it never could have anticipated.
+  scale, freeing each community to define "human scale" for itself. But in solving today's worst problems,
+  this society of tomorrow discovers even greater challenges it never could have anticipated.
 essay: "the-high-dimensional-society"
 event:
   name: "PiBoWriMo 2026"
