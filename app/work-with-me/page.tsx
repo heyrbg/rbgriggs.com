@@ -40,7 +40,7 @@ export default function WorkWithMe() {
           </>
         )}
         <p>
-          The <Link href="/essays">essays</Link> and <Link href="/concepts">key concepts</Link> are the best
+          The <Link href="/essays">essays</Link> and <Link href="/philosophy">philosophy</Link> are the best
           way to see how I think.
         </p>
         {bets && (

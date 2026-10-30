@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   const essays = loadEssays();
   const latest = essays[0]?.date;
-  const pages = ["", "/essays", "/notes", "/concepts", "/about", "/work-with-me", "/for-ai"].map((p) => ({
+  const pages = ["", "/essays", "/notes", "/philosophy", "/software", "/about", "/work-with-me", "/for-ai"].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: latest,
   }));

@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import fs from "node:fs";
+import path from "node:path";
 import { conceptId, loadConcepts } from "@/lib/corpus.mjs";
+import { renderMarkdown } from "@/lib/markdown";
 import { JsonLd } from "@/components/JsonLd";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Key concepts",
-  description: `A glossary of concepts coined or distinctively defined by ${site.name}, each linked to the essay where it is developed.`,
-  alternates: { canonical: "/concepts", types: { "text/markdown": "/concepts.md" } },
+  title: "Philosophy",
+  description: `The philosophy of technology of ${site.name} in brief: eight recurring ideas, and a glossary of every concept coined across the essays.`,
+  alternates: { canonical: "/philosophy", types: { "text/markdown": "/concepts.md" } },
 };
 
-export default function ConceptsPage() {
+export default function PhilosophyPage() {
   const concepts = loadConcepts();
+  const overviewFile = path.join(process.cwd(), "content", "overview.md");
+  const overview = fs.existsSync(overviewFile) ? fs.readFileSync(overviewFile, "utf8") : "";
   // A term defined in more than one essay keeps its anchor on the first entry only.
   const seen = new Set<string>();
   const anchor = (term: string) => {
@@ -27,7 +32,7 @@ export default function ConceptsPage() {
           "@context": "https://schema.org",
           "@type": "DefinedTermSet",
           name: `Key concepts in the work of ${site.name}`,
-          url: `${site.url}/concepts`,
+          url: `${site.url}/philosophy#key-concepts`,
           hasDefinedTerm: concepts.map((c) => ({
             "@type": "DefinedTerm",
             name: c.term,
@@ -36,8 +41,10 @@ export default function ConceptsPage() {
           })),
         }}
       />
-      <h1>Key concepts</h1>
-      <p className="lede prose">
+      <h1>Philosophy</h1>
+      {overview && <section className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(overview) }} />}
+      <h2 id="key-concepts"><a href="#key-concepts">Key concepts</a></h2>
+      <p className="prose">
         Terms coined or distinctively defined across {site.name}&rsquo;s essays. Each links to the essay
         where the idea is developed.
       </p>

@@ -1,29 +1,16 @@
 import Link from "next/link";
-import fs from "node:fs";
-import path from "node:path";
-import { loadAuthor, loadEssays, loadNotes } from "@/lib/corpus.mjs";
-import { loadProjects } from "@/lib/projects.mjs";
-import { renderMarkdown } from "@/lib/markdown";
+import { loadAuthor, loadEssays, loadNotes, START_HERE } from "@/lib/corpus.mjs";
 import { personSchema, websiteSchema } from "@/lib/schema";
 import { EssayList } from "@/components/EssayList";
 import { JsonLd } from "@/components/JsonLd";
 import { Bio } from "@/components/Bio";
 import { site } from "@/lib/site";
 
-const START_HERE = ["manifesto", "the-high-dimensional-society", "the-plurality-a-better-myth-for-ai", "a-constraint-theory-of-technology"];
-
-function overview(): string | null {
-  const file = path.join(process.cwd(), "content", "overview.md");
-  return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
-}
-
 export default function Home() {
   const author = loadAuthor();
   const essays = loadEssays();
   const start = START_HERE.map((s) => essays.find((e) => e.slug === s)).filter((e) => e !== undefined);
-  const ov = overview();
   const notes = loadNotes().slice(0, 5);
-  const projects = loadProjects();
 
   return (
     <>
@@ -32,22 +19,15 @@ export default function Home() {
         <h1>{site.name}</h1>
         <p className="subtitle">{site.tagline}</p>
         <p className="lede"><Bio text={author.short_bio} /></p>
-        {projects.map((p) => (
-          <p key={p.slug} className="meta">
-            Now writing: <Link href={`/projects/${p.slug}`}>{p.title}</Link>, a {p.kind.toLowerCase()}
-            {p.event ? <> for {p.event.name}</> : null}
-          </p>
-        ))}
         <p>
           <Link className="button" href="/work-with-me">Consulting, advising and collaboration</Link>
         </p>
       </section>
 
-      {ov && <section className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(ov) }} />}
-
       <section>
         <h2>Start here</h2>
         <EssayList essays={start} />
+        <p><Link href="/essays">All {essays.length} essays →</Link></p>
       </section>
 
       {notes.length > 0 && (
@@ -65,11 +45,6 @@ export default function Home() {
           <p><Link href="/notes">All notes →</Link></p>
         </section>
       )}
-
-      <section>
-        <h2>All essays</h2>
-        <EssayList essays={essays.filter((e) => !START_HERE.includes(e.slug))} />
-      </section>
     </>
   );
 }

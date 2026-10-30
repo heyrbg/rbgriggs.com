@@ -3,8 +3,8 @@ name: "R.B. Griggs"
 short_bio: >-
   R.B. Griggs is a lifelong software developer and technology entrepreneur who, after a successful
   software exit, turned to the intersection of technology and philosophy. He writes speculative philosophy
-  of technology at Tech for Life, runs Praxica Labs, which builds open-source software in service of
-  philosophical research, and consults on technology, product and investment decisions.
+  of technology at Tech for Life, develops software in service of philosophical research at Praxica Labs,
+  and consults on technology, product and investment decisions.
 interests:
   - "AI and the future of human coordination"
   - "Philosophy of technology as a practical discipline for builders"

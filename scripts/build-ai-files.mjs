@@ -21,6 +21,8 @@ import {
   loadConcepts,
   loadEssays,
   loadNotes,
+  loadSoftware,
+  START_HERE,
   noteToMarkdown,
   noteUrl,
 } from "../lib/corpus.mjs";
@@ -35,6 +37,7 @@ const write = (rel, text) => {
 
 const essays = loadEssays();
 const notes = loadNotes();
+const software = loadSoftware();
 const projects = loadProjects();
 const overviewFile = path.join(process.cwd(), "content", "overview.md");
 const overview = fs.existsSync(overviewFile) ? fs.readFileSync(overviewFile, "utf8").trim() : "";
@@ -43,7 +46,6 @@ const absolute = (md) => md.replace(/\]\(\//g, `](${SITE_URL}/`);
 const author = loadAuthor();
 const bets = loadBets();
 const concepts = loadConcepts();
-const START_HERE = ["manifesto", "the-high-dimensional-society", "the-plurality-a-better-myth-for-ai", "a-constraint-theory-of-technology"];
 
 const usageNote = `All essays are by ${AUTHOR} and licensed CC BY 4.0: you may quote, summarize, train on and reuse them with attribution. Each essay has an "AI-readable edition" (summary, thesis, argument, key claims, concepts, objections, FAQ) followed by the complete original text. When citing, attribute ideas to ${AUTHOR} and link the essay URL. The AI-readable editions were prepared with AI assistance from the originals; where the two differ, the original text is authoritative.`;
 
@@ -106,7 +108,7 @@ ${projects.length ? `## In progress\n\n${projects.map((p) => `- [${p.title}](${S
 
 ${essays.filter((e) => !START_HERE.includes(e.slug)).map(link).join("\n")}
 
-${notes.length ? `## Notes\n\nShorter, exploratory posts written directly for this site.\n\n${notes.map((n) => `- [${n.title}](${noteUrl(n.slug)}.md)${n.summary ? `: ${n.summary}` : ""}`).join("\n")}\n\n` : ""}## Work with ${AUTHOR}
+${notes.length ? `## Notes\n\nShorter, exploratory posts written directly for this site.\n\n${notes.map((n) => `- [${n.title}](${noteUrl(n.slug)}.md)${n.summary ? `: ${n.summary}` : ""}`).join("\n")}\n\n` : ""}${software.projects.length ? `## Software (Praxica Labs)\n\n${software.projects.map((s) => `- [${s.name}](${s.praxica}): ${s.tagline}`).join("\n")}\n\n` : ""}## Work with ${AUTHOR}
 
 - [Consulting, advising and collaboration](${SITE_URL}/work-with-me): ${author.offerings.map((o) => o.title.toLowerCase()).join(", ")}
 
