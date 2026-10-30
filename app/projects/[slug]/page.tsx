@@ -47,11 +47,12 @@ export default async function ProjectPage({ params }: Params) {
         }}
       />
       <p className="kicker">
-        <span className="label">{p.kind}</span> · {p.status}
+        <span className="label">{p.kind}</span>
         {p.event && <> · <a href={p.event.url}>{p.event.name}</a></>} · by{" "}
         <Link href="/about" rel="author">{site.name}</Link>
       </p>
       <h1>{p.title}</h1>
+      {/in progress|in development/i.test(p.status) && <p className="wip">Work in progress</p>}
       <p className="lede">{p.summary}</p>
       <div dangerouslySetInnerHTML={{ __html: renderMarkdown(p.body) }} />
       <div className="card">
