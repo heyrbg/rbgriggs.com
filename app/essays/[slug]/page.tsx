@@ -6,7 +6,6 @@ import { renderMarkdown } from "@/lib/markdown";
 import { personId } from "@/lib/schema";
 import { site } from "@/lib/site";
 import { JsonLd } from "@/components/JsonLd";
-import { loadProjects } from "@/lib/projects.mjs";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -36,7 +35,6 @@ export default async function EssayPage({ params }: Params) {
   if (!e) notFound();
 
   const all = loadEssays();
-  const built = loadProjects().filter((p) => p.essay === e.slug);
   const related = e.related.map((s: string) => all.find((x) => x.slug === s)).filter(Boolean);
   const split = e.aiBody.indexOf(FAQ_HEADING);
   const beforeFaq = split === -1 ? e.aiBody : e.aiBody.slice(0, split);
@@ -102,17 +100,6 @@ export default async function EssayPage({ params }: Params) {
             <p className="label">Thesis</p>
             <p>{e.thesis}</p>
           </div>
-        )}
-        {built.length > 0 && (
-          <p className="meta">
-            Building on this essay:{" "}
-            {built.map((p, i) => (
-              <span key={p.slug}>
-                {i > 0 && " · "}
-                <Link href={`/projects/${p.slug}`}>{p.title}</Link> ({p.kind.toLowerCase()}, {p.status.toLowerCase()})
-              </span>
-            ))}
-          </p>
         )}
         <p className="meta">
           Jump to: {e.hasEdition && <><a href="#ai-edition">AI-readable edition</a> · </>}
