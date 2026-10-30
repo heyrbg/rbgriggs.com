@@ -5,9 +5,9 @@ genre: "Speculative fiction"
 status: "In progress"
 started: "2026-11-02"
 summary: >-
-  A speculative novel in progress by R.B. Griggs, imagining a society where AI makes it possible to
-  coordinate at planetary scale without flattening people into thin proxies like price, vote, click and
-  credential.
+  Speculative fiction set in a high-dimensional society, where AI-enabled protocols coordinate at planetary
+  scale, freeing each community to define "human scale" for itself. But in solving the worst problems of
+  today, this society of tomorrow quickly discovers new ones it never could have anticipated.
 essay: "the-high-dimensional-society"
 event:
   name: "PiBoWriMo 2026"
