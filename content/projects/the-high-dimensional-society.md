@@ -5,9 +5,10 @@ genre: "Speculative fiction"
 status: "In progress"
 started: "2026-11-02"
 summary: >-
-  Speculative fiction set in a high-dimensional society, where AI-enabled protocols coordinate at planetary
-  scale, freeing each community to define "human scale" for itself. But in solving some of today's worst problems,
-  this society of tomorrow discovers even greater challenges it never could have anticipated.
+  Speculative fiction set in a high-dimensional society, where AI-enabled protocols coordinate life at
+  planetary scale, freeing each community to define "human scale" for itself. But as new forms of
+  coordination dissolve many of today's hardest problems, this society of tomorrow discovers an entirely new
+  class of challenges humanity has never faced.
 essay: "the-high-dimensional-society"
 event:
   name: "PiBoWriMo 2026"
